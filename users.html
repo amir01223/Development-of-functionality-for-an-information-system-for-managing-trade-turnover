@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="users_title">إدارة المستخدمين - نظام إدارة المخازن</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --sidebar-width: 280px;
+        }
+        
+        /* Language Switcher */
+        .language-switcher-header {
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-left: 15px;
+        }
+        
+        .lang-btn {
+            padding: 3px 8px;
+            border: 2px solid transparent;
+            background: transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 11px;
+            color: var(--dark-color);
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+            border-color: var(--secondary-color);
+        }
+        
+        /* RTL/LTR Support */
+        body.ltr {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        body.ltr .header-title,
+        body.ltr .card-header-custom h5,
+        body.ltr .form-label-custom,
+        body.ltr .modal-title-custom,
+        body.ltr .table-custom th,
+        body.ltr .table-custom td,
+        body.ltr .dropdown-menu,
+        body.ltr .pagination,
+        body.ltr .card-footer,
+        body.ltr .sidebar-user div,
+        body.ltr .nav-link span,
+        body.ltr .sidebar-logo h3,
+        body.ltr .sidebar-logo small,
+        body.ltr .main-footer .text-white-50 {
+            text-align: left;
+            direction: ltr;
+        }
+        
+        body.ltr .sidebar-nav {
+            text-align: left;
+        }
+        
+        body.ltr .nav-link {
+            flex-direction: row;
+        }
+        
+        body.ltr .nav-link i {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+        
+        body.ltr .nav-link:hover {
+            transform: translateX(5px);
+        }
+        
+        body.ltr #sidebar {
+            right: auto;
+            left: 0;
+            border-left: none;
+            border-right: 4px solid var(--secondary-color);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        body.ltr #sidebar.hidden {
+            margin-right: 0;
+            margin-left: calc(-1 * var(--sidebar-width));
+        }
+        
+        body.ltr .main-content {
+            margin-right: 0;
+            margin-left: var(--sidebar-width);
+        }
+        
+        body.ltr .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        body.ltr .header-title i {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+        
+        body.ltr .language-switcher-header {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+        
+        body.ltr .action-buttons {
+            flex-direction: row;
+        }
+        
+        body.ltr .table-custom th {
+            text-align: left;
+        }
+        
+        body.ltr .text-end {
+            text-align: left !important;
+        }
+        
+        body.ltr .text-start {
+            text-align: right !important;
+        }
+        
+        body.ltr .dropdown-menu {
+            text-align: left;
+        }
+        
+        body.ltr .pagination {
+            padding-right: 0;
+            padding-left: 0;
+        }
+        
+        body.ltr .input-group > .input-group-text {
+            border-left: 1px solid #ced4da;
+            border-right: none;
+        }
+        
+        body.ltr .input-group > .form-control {
+            border-right: 1px solid #ced4da;
+            border-left: none;
+        }
+        
+        body.ltr .error-message {
+            text-align: left;
+        }
+        
+        body.ltr .btn-custom {
+            flex-direction: row;
+        }
+        
+        body.ltr .btn-custom i {
+            order: -1;
+        }
+        
+        body.ltr .d-flex.gap-3 {
+            flex-direction: row;
+        }
+        
+        body.ltr .modal-footer {
+            flex-direction: row-reverse;
+        }
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, #1a252f 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            padding: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1030;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        #sidebar.hidden {
+            margin-right: calc(-1 * var(--sidebar-width));
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sidebar-logo i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-user {
+            padding: 1rem 1.5rem;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-user img {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 1rem 1.5rem;
+            margin: 0.2rem 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-5px);
+        }
+        
+        .nav-link.active {
+            color: white;
+            background: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .nav-link i {
+            font-size: 1.2rem;
+            width: 24px;
+        }
+        
+        .main-content {
+            margin-right: var(--sidebar-width);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+        }
+        
+        .main-content.full-width {
+            margin-right: 0;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .header-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-title i {
+            color: var(--secondary-color);
+            margin-left: 10px;
+        }
+        
+        /* Card Styles */
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .table-custom {
+            margin: 0;
+        }
+        
+        .table-custom thead {
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+            color: white;
+        }
+        
+        .table-custom th {
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .table-custom th:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .table-custom tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+            transform: scale(1.002);
+        }
+        
+        .table-custom td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        /* Badge Styles */
+        .badge-custom {
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: none;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            color: white;
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: white;
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: white;
+        }
+        
+        .badge-primary {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+        }
+        
+        .badge-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+        
+        /* Button Styles */
+        .btn-custom {
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .btn-outline-light {
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .btn-outline-light:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-view {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .btn-view:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-edit {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .btn-edit:hover {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+        }
+        
+        .btn-delete:hover {
+            background: #c0392b;
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .modal-custom {
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content-custom {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .modal-header-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-bottom: none;
+            padding: 1.5rem;
+        }
+        
+        .modal-title-custom {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .btn-close-custom {
+            color: white;
+            opacity: 0.8;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-close-custom:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        
+        /* Form Styles */
+        .form-label-custom {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control-custom, .form-select-custom {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.15);
+        }
+        
+        /* Loading Animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Alert Styles */
+        .alert-custom {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 1rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        /* User Avatar */
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .avatar-manager { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+        .avatar-supervisor { background: linear-gradient(135deg, #f39c12, #d35400); color: white; }
+        .avatar-employee { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            #sidebar {
+                margin-right: calc(-1 * var(--sidebar-width));
+            }
+            
+            #sidebar.hidden {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-right: 0;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+            
+            .language-switcher-header {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.4rem;
+            }
+            
+            .card-header-custom {
+                padding: 1rem;
+            }
+            
+            .btn-custom {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="d-flex flex-column">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-warehouse"></i>
+                <div>
+                    <h3 class="mb-0 fw-bold" data-i18n="system_name">نظام المخازن</h3>
+                    <small class="text-white-50" data-i18n="system_integration">الإدارة المتكاملة</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Info -->
+        <div class="sidebar-user d-flex align-items-center gap-3">
+            <img src="https://ui-avatars.com/api/?name=أحمد+محمود&background=3498db&color=fff&size=50&rounded=true" 
+                 class="rounded-circle" alt="User">
+            <div>
+                <h6 class="mb-0 fw-bold">أحمد محمود</h6>
+                <small class="text-white-50" data-i18n="user_role">مدير النظام</small>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="sidebar-nav flex-grow-1">
+            <a href="dashboard.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span data-i18n="dashboard">لوحة التحكم</span>
+            </a>
+            <a href="inventory.html" class="nav-link">
+                <i class="fas fa-boxes"></i>
+                <span data-i18n="inventory_management">إدارة المخزون</span>
+            </a>
+            <a href="transactions.html" class="nav-link">
+                <i class="fas fa-exchange-alt"></i>
+                <span data-i18n="daily_operations">العمليات اليومية</span>
+            </a>
+            <a href="reports.html" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                <span data-i18n="reports_analysis">التقارير والتحليل</span>
+            </a>
+            <a href="warehouses.html" class="nav-link">
+                <i class="fas fa-warehouse"></i>
+                <span data-i18n="warehouse_management">إدارة المخازن</span>
+            </a>
+            <a href="users.html" class="nav-link active">
+                <i class="fas fa-users"></i>
+                <span data-i18n="users">المستخدمون</span>
+            </a>
+            <a href="settings.html" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span data-i18n="settings">الإعدادات</span>
+            </a>
+        </nav>
+        
+        <!-- Logout Button -->
+        <div class="p-3 mt-auto">
+            <a href="index.html" class="btn btn-danger w-100 py-2 fw-bold d-flex align-items-center justify-content-center gap-2">
+                <i class="fas fa-sign-out-alt"></i>
+                <span data-i18n="logout">تسجيل الخروج</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="main-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <button onclick="WMS.toggleSidebar()" class="btn btn-outline-primary d-lg-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="users_title">إدارة المستخدمين</span>
+                </h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Language Switcher -->
+                <div class="language-switcher-header d-none d-lg-flex">
+                    <button class="lang-btn" data-lang="fr">FR</button>
+                    <button class="lang-btn active" data-lang="ar">AR</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="ru">RU</button>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="d-none d-md-flex gap-3">
+                    <div class="text-end">
+                        <small class="text-muted d-block" data-i18n="total_users">إجمالي المستخدمين</small>
+                        <span class="fw-bold text-primary" id="totalUsers">0</span>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted d-block" data-i18n="managers">المديرين</small>
+                        <span class="fw-bold text-danger" id="totalManagers">0</span>
+                    </div>
+                </div>
+                
+                <!-- Add User Button -->
+                <button onclick="openAddUserModal()" class="btn btn-primary btn-custom">
+                    <i class="fas fa-user-plus"></i>
+                    <span data-i18n="add_user">إضافة مستخدم</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Alert Container -->
+        <div id="alertContainer" class="container mt-3"></div>
+
+        <!-- Main Content -->
+        <main class="container py-4">
+            <!-- Statistics Cards -->
+            <div class="stats-cards fade-in">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="stat-value text-primary" id="statsTotal">0</h3>
+                    <p class="stat-label" data-i18n="total_users">إجمالي المستخدمين</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="stat-value text-danger" id="statsManagers">0</h3>
+                    <p class="stat-label" data-i18n="managers">المديرين</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="stat-value text-warning" id="statsSupervisors">0</h3>
+                    <p class="stat-label" data-i18n="supervisors">المشرفين</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3 class="stat-value text-success" id="statsActive">0</h3>
+                    <p class="stat-label" data-i18n="active">نشطين</p>
+                </div>
+            </div>
+
+            <!-- Users Table Card -->
+            <div class="card card-custom fade-in">
+                <div class="card-header-custom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        <span data-i18n="users_list">قائمة المستخدمين</span>
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button onclick="exportUsers()" class="btn btn-success btn-custom">
+                            <i class="fas fa-file-excel"></i>
+                            <span data-i18n="export_excel">تصدير Excel</span>
+                        </button>
+                        <button onclick="refreshUsers()" class="btn btn-outline-light btn-custom">
+                            <i class="fas fa-redo"></i>
+                            <span data-i18n="refresh">تحديث</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Search and Filter -->
+                    <div class="p-3 bg-light border-bottom">
+                        <div class="row g-2">
+                            <div class="col-12 col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-search text-muted"></i>
+                                    </span>
+                                    <input type="text" id="searchUser" class="form-control border-start-0" 
+                                           placeholder="ابحث في المستخدمين..." data-i18n-placeholder="search_users_placeholder">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select id="roleFilter" class="form-select form-select-custom">
+                                    <option value="" data-i18n="all_roles">جميع الأدوار</option>
+                                    <option value="مدير" data-i18n="manager">مدير</option>
+                                    <option value="مشرف" data-i18n="supervisor">مشرف</option>
+                                    <option value="موظف" data-i18n="employee">موظف</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select id="statusFilter" class="form-select form-select-custom">
+                                    <option value="" data-i18n="all_statuses">جميع الحالات</option>
+                                    <option value="نشط" data-i18n="active_status">نشط</option>
+                                    <option value="غير نشط" data-i18n="inactive">غير نشط</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Table -->
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-custom" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th width="60"></th>
+                                        <th onclick="sortUsers('name')" data-i18n="name">الاسم <i class="fas fa-sort ms-1"></i></th>
+                                        <th onclick="sortUsers('email')" data-i18n="email">البريد الإلكتروني <i class="fas fa-sort ms-1"></i></th>
+                                        <th onclick="sortUsers('phone')" data-i18n="phone">الهاتف <i class="fas fa-sort ms-1"></i></th>
+                                        <th onclick="sortUsers('role')" data-i18n="role">الدور <i class="fas fa-sort ms-1"></i></th>
+                                        <th onclick="sortUsers('warehouse')" data-i18n="warehouse">المخزن <i class="fas fa-sort ms-1"></i></th>
+                                        <th onclick="sortUsers('status')" data-i18n="status">الحالة <i class="fas fa-sort ms-1"></i></th>
+                                        <th width="120" data-i18n="actions">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center py-5">
+                                            <div class="loading-spinner mx-auto mb-3"></div>
+                                            <p class="text-muted mb-0" data-i18n="loading_users">جاري تحميل المستخدمين...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                    <div class="text-muted">
+                        <span id="totalItems">0</span> <span data-i18n="user">مستخدم</span>
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0" id="pagination">
+                            <li class="page-item disabled"><a class="page-link" href="#" data-i18n="previous">السابق</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item disabled"><a class="page-link" href="#" data-i18n="next">التالي</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade modal-custom" id="addUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title modal-title-custom">
+                        <i class="fas fa-user-plus me-2"></i>
+                        <span id="modalTitle" data-i18n="add_user_modal_title">إضافة مستخدم جديد</span>
+                    </h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="addUserForm" onsubmit="event.preventDefault(); saveUser();">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <!-- User Name -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="full_name">الاسم الكامل *</label>
+                                <input type="text" class="form-control form-control-custom" id="userName" required>
+                                <div class="invalid-feedback" id="nameError"></div>
+                            </div>
+                            
+                            <!-- User Email -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="email_address">البريد الإلكتروني *</label>
+                                <input type="email" class="form-control form-control-custom" id="userEmail" required>
+                                <div class="invalid-feedback" id="emailError"></div>
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="phone_number">رقم الهاتف *</label>
+                                <input type="tel" class="form-control form-control-custom" id="userPhone" required>
+                                <div class="invalid-feedback" id="phoneError"></div>
+                            </div>
+                            
+                            <!-- Role -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="role">الدور *</label>
+                                <select class="form-select form-select-custom" id="userRole" required>
+                                    <option value="" data-i18n="select_role">اختر الدور</option>
+                                    <option value="مدير" data-i18n="manager">مدير</option>
+                                    <option value="مشرف" data-i18n="supervisor">مشرف</option>
+                                    <option value="موظف" data-i18n="employee">موظف</option>
+                                </select>
+                                <div class="invalid-feedback" id="roleError"></div>
+                            </div>
+                            
+                            <!-- Warehouse -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="warehouse">المخزن المسؤول</label>
+                                <select class="form-select form-select-custom" id="userWarehouse">
+                                    <option value="" data-i18n="select_warehouse">اختر المخزن</option>
+                                    <option value="W001">المخزن الرئيسي</option>
+                                    <option value="W002">مخزن التوزيع</option>
+                                    <option value="W003">مخزن التجزئة</option>
+                                    <option value="W004">مخزن الصيانة</option>
+                                </select>
+                                <div class="invalid-feedback" id="warehouseError"></div>
+                            </div>
+                            
+                            <!-- Status -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="status">الحالة *</label>
+                                <select class="form-select form-select-custom" id="userStatus" required>
+                                    <option value="" data-i18n="select_status">اختر الحالة</option>
+                                    <option value="نشط" data-i18n="active_status">نشط</option>
+                                    <option value="غير نشط" data-i18n="inactive">غير نشط</option>
+                                </select>
+                                <div class="invalid-feedback" id="statusError"></div>
+                            </div>
+                            
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="password">كلمة المرور *</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-custom" id="userPassword" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback" id="passwordError"></div>
+                                <small class="text-muted" data-i18n="password_hint">يجب أن تكون 8 أحرف على الأقل</small>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" data-i18n="confirm_password">تأكيد كلمة المرور *</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-custom" id="confirmPassword" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="toggleConfirmPasswordVisibility()">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback" id="confirmPasswordError"></div>
+                            </div>
+                            
+                            <!-- Permissions -->
+                            <div class="col-12">
+                                <label class="form-label-custom mb-3" data-i18n="permissions">الصلاحيات</label>
+                                <div class="row">
+                                    <div class="col-md-3 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="permInventory">
+                                            <label class="form-check-label" for="permInventory" data-i18n="inventory_management">إدارة المخزون</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="permTransactions">
+                                            <label class="form-check-label" for="permTransactions" data-i18n="daily_operations">العمليات اليومية</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="permReports">
+                                            <label class="form-check-label" for="permReports" data-i18n="reports">التقارير</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="permUsers">
+                                            <label class="form-check-label" for="permUsers" data-i18n="users_management_permission">إدارة المستخدمين</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Error Summary -->
+                        <div class="alert alert-danger mt-3 d-none" id="formErrors">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong data-i18n="form_errors_title">يوجد أخطاء في النموذج:</strong>
+                            <ul class="mb-0 mt-2" id="errorList"></ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i>
+                            <span data-i18n="cancel">إلغاء</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-custom" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            <span id="saveButtonText" data-i18n="save_user">حفظ المستخدم</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View User Modal -->
+    <div class="modal fade modal-custom" id="viewUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title modal-title-custom">
+                        <i class="fas fa-user me-2"></i>
+                        <span data-i18n="user_info">معلومات المستخدم</span>
+                    </h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h4 id="viewUserName" class="mb-2"></h4>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span id="viewUserRole" class="badge badge-primary badge-custom"></span>
+                                <span id="viewUserStatus" class="badge badge-success badge-custom"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div id="viewUserAvatar" class="user-avatar mx-auto ms-md-0" style="width: 80px; height: 80px; font-size: 2rem;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted mb-3" data-i18n="basic_info">المعلومات الأساسية</h6>
+                                    <div class="mb-2">
+                                        <small class="text-muted" data-i18n="email_address">البريد الإلكتروني:</small>
+                                        <div class="fw-bold" id="viewUserEmail"></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted" data-i18n="phone_number">رقم الهاتف:</small>
+                                        <div class="fw-bold" id="viewUserPhone"></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted" data-i18n="warehouse">المخزن المسؤول:</small>
+                                        <div class="fw-bold" id="viewUserWarehouse"></div>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted" data-i18n="created_at">تاريخ الإنشاء:</small>
+                                        <div class="fw-bold" id="viewUserCreatedAt"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted mb-3" data-i18n="permissions">الصلاحيات</h6>
+                                    <div id="viewUserPermissions" class="d-flex flex-wrap gap-2">
+                                        <!-- Permissions will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        <span data-i18n="close">إغلاق</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Language Switcher JS -->
+    <script>
+        // Language Switcher Configuration avec traductions intégrées
+        const languageSwitcher = {
+            currentLang: 'ar',
+            translations: {},
+            
+            // Available languages
+            languages: {
+                'ar': { name: 'العربية' },
+                'fr': { name: 'Français' },
+                'en': { name: 'English' },
+                'ru': { name: 'Русский' }
+            },
+            
+            // Traductions intégrées
+            builtInTranslations: {
+                'fr': {
+                    "users_title": "Gestion des Utilisateurs",
+                    "system_name": "Système d'Entrepôt",
+                    "system_integration": "Gestion Intégrée",
+                    "user_role": "Administrateur Système",
+                    "dashboard": "Tableau de Bord",
+                    "inventory_management": "Gestion des Stocks",
+                    "daily_operations": "Opérations Quotidiennes",
+                    "reports_analysis": "Rapports et Analyse",
+                    "warehouse_management": "Gestion des Entrepôts",
+                    "users": "Utilisateurs",
+                    "settings": "Paramètres",
+                    "logout": "Déconnexion",
+                    "total_users": "Total Utilisateurs",
+                    "managers": "Gestionnaires",
+                    "add_user": "Ajouter Utilisateur",
+                    "users_list": "Liste des Utilisateurs",
+                    "export_excel": "Exporter Excel",
+                    "refresh": "Rafraîchir",
+                    "search_users_placeholder": "Rechercher utilisateurs...",
+                    "all_roles": "Tous Rôles",
+                    "manager": "Gestionnaire",
+                    "supervisor": "Superviseur",
+                    "employee": "Employé",
+                    "all_statuses": "Tous États",
+                    "active_status": "Actif",
+                    "inactive": "Inactif",
+                    "name": "Nom",
+                    "email": "Email",
+                    "phone": "Téléphone",
+                    "role": "Rôle",
+                    "warehouse": "Entrepôt",
+                    "status": "État",
+                    "actions": "Actions",
+                    "loading_users": "Chargement utilisateurs...",
+                    "user": "utilisateur",
+                    "previous": "Précédent",
+                    "next": "Suivant",
+                    "add_user_modal_title": "Ajouter Nouvel Utilisateur",
+                    "full_name": "Nom Complet *",
+                    "email_address": "Adresse Email *",
+                    "phone_number": "Numéro Téléphone *",
+                    "select_role": "Sélectionner Rôle",
+                    "select_warehouse": "Sélectionner Entrepôt",
+                    "select_status": "Sélectionner État",
+                    "password": "Mot de Passe *",
+                    "confirm_password": "Confirmer Mot de Passe *",
+                    "permissions": "Permissions",
+                    "password_hint": "Doit être 8 caractères minimum",
+                    "inventory_management": "Gestion Stocks",
+                    "daily_operations": "Opérations Quotidiennes",
+                    "reports": "Rapports",
+                    "users_management_permission": "Gestion Utilisateurs",
+                    "form_errors_title": "Erreurs dans le formulaire:",
+                    "cancel": "Annuler",
+                    "save_user": "Sauvegarder Utilisateur",
+                    "edit_user_modal_title": "Modifier Utilisateur",
+                    "update_user": "Mettre à Jour Utilisateur",
+                    "user_info": "Informations Utilisateur",
+                    "basic_info": "Informations de Base",
+                    "created_at": "Date Création",
+                    "close": "Fermer",
+                    "total_users_stat": "Total Utilisateurs",
+                    "managers_stat": "Gestionnaires",
+                    "supervisors": "Superviseurs",
+                    "active": "Actifs",
+                    "no_users": "Aucun utilisateur enregistré",
+                    "add_new_user": "Ajouter nouvel utilisateur",
+                    "view_details": "Voir détails",
+                    "edit_user": "Modifier utilisateur",
+                    "delete_user": "Supprimer utilisateur",
+                    "email_already_exists": "Email déjà utilisé",
+                    "password_mismatch": "Les mots de passe ne correspondent pas",
+                    "user_added_success": "Utilisateur ajouté avec succès",
+                    "user_updated_success": "Utilisateur mis à jour avec succès",
+                    "user_deleted_success": "Utilisateur supprimé avec succès",
+                    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet utilisateur?",
+                    "user_not_found": "Utilisateur non trouvé",
+                    "cannot_delete_current_user": "Impossible de supprimer l'utilisateur actuel"
+                },
+                'en': {
+                    "users_title": "Users Management",
+                    "system_name": "Warehouse System",
+                    "system_integration": "Integrated Management",
+                    "user_role": "System Administrator",
+                    "dashboard": "Dashboard",
+                    "inventory_management": "Inventory Management",
+                    "daily_operations": "Daily Operations",
+                    "reports_analysis": "Reports & Analysis",
+                    "warehouse_management": "Warehouse Management",
+                    "users": "Users",
+                    "settings": "Settings",
+                    "logout": "Logout",
+                    "total_users": "Total Users",
+                    "managers": "Managers",
+                    "add_user": "Add User",
+                    "users_list": "Users List",
+                    "export_excel": "Export Excel",
+                    "refresh": "Refresh",
+                    "search_users_placeholder": "Search users...",
+                    "all_roles": "All Roles",
+                    "manager": "Manager",
+                    "supervisor": "Supervisor",
+                    "employee": "Employee",
+                    "all_statuses": "All Statuses",
+                    "active_status": "Active",
+                    "inactive": "Inactive",
+                    "name": "Name",
+                    "email": "Email",
+                    "phone": "Phone",
+                    "role": "Role",
+                    "warehouse": "Warehouse",
+                    "status": "Status",
+                    "actions": "Actions",
+                    "loading_users": "Loading users...",
+                    "user": "user",
+                    "previous": "Previous",
+                    "next": "Next",
+                    "add_user_modal_title": "Add New User",
+                    "full_name": "Full Name *",
+                    "email_address": "Email Address *",
+                    "phone_number": "Phone Number *",
+                    "select_role": "Select Role",
+                    "select_warehouse": "Select Warehouse",
+                    "select_status": "Select Status",
+                    "password": "Password *",
+                    "confirm_password": "Confirm Password *",
+                    "permissions": "Permissions",
+                    "password_hint": "Must be at least 8 characters",
+                    "inventory_management": "Inventory Management",
+                    "daily_operations": "Daily Operations",
+                    "reports": "Reports",
+                    "users_management_permission": "Users Management",
+                    "form_errors_title": "Errors in the form:",
+                    "cancel": "Cancel",
+                    "save_user": "Save User",
+                    "edit_user_modal_title": "Edit User",
+                    "update_user": "Update User",
+                    "user_info": "User Information",
+                    "basic_info": "Basic Information",
+                    "created_at": "Created At",
+                    "close": "Close",
+                    "total_users_stat": "Total Users",
+                    "managers_stat": "Managers",
+                    "supervisors": "Supervisors",
+                    "active": "Active",
+                    "no_users": "No registered users",
+                    "add_new_user": "Add new user",
+                    "view_details": "View details",
+                    "edit_user": "Edit user",
+                    "delete_user": "Delete user",
+                    "email_already_exists": "Email already exists",
+                    "password_mismatch": "Passwords do not match",
+                    "user_added_success": "User added successfully",
+                    "user_updated_success": "User updated successfully",
+                    "user_deleted_success": "User deleted successfully",
+                    "confirm_delete": "Are you sure you want to delete this user?",
+                    "user_not_found": "User not found",
+                    "cannot_delete_current_user": "Cannot delete current user"
+                },
+                'ru': {
+                    "users_title": "Управление Пользователями",
+                    "system_name": "Система Склада",
+                    "system_integration": "Интегрированное Управление",
+                    "user_role": "Администратор Системы",
+                    "dashboard": "Панель Управления",
+                    "inventory_management": "Управление Запасами",
+                    "daily_operations": "Ежедневные Операции",
+                    "reports_analysis": "Отчеты и Анализ",
+                    "warehouse_management": "Управление Складами",
+                    "users": "Пользователи",
+                    "settings": "Настройки",
+                    "logout": "Выход",
+                    "total_users": "Всего Пользователей",
+                    "managers": "Менеджеры",
+                    "add_user": "Добавить Пользователя",
+                    "users_list": "Список Пользователей",
+                    "export_excel": "Экспорт Excel",
+                    "refresh": "Обновить",
+                    "search_users_placeholder": "Поиск пользователей...",
+                    "all_roles": "Все Роли",
+                    "manager": "Менеджер",
+                    "supervisor": "Супервайзер",
+                    "employee": "Сотрудник",
+                    "all_statuses": "Все Статусы",
+                    "active_status": "Активен",
+                    "inactive": "Неактивен",
+                    "name": "Имя",
+                    "email": "Email",
+                    "phone": "Телефон",
+                    "role": "Роль",
+                    "warehouse": "Склад",
+                    "status": "Статус",
+                    "actions": "Действия",
+                    "loading_users": "Загрузка пользователей...",
+                    "user": "пользователь",
+                    "previous": "Предыдущий",
+                    "next": "Следующий",
+                    "add_user_modal_title": "Добавить Нового Пользователя",
+                    "full_name": "Полное Имя *",
+                    "email_address": "Email Адрес *",
+                    "phone_number": "Номер Телефона *",
+                    "select_role": "Выбрать Роль",
+                    "select_warehouse": "Выбрать Склад",
+                    "select_status": "Выбрать Статус",
+                    "password": "Пароль *",
+                    "confirm_password": "Подтвердить Пароль *",
+                    "permissions": "Права",
+                    "password_hint": "Должно быть не менее 8 символов",
+                    "inventory_management": "Управление Запасами",
+                    "daily_operations": "Ежедневные Операции",
+                    "reports": "Отчеты",
+                    "users_management_permission": "Управление Пользователями",
+                    "form_errors_title": "Ошибки в форме:",
+                    "cancel": "Отмена",
+                    "save_user": "Сохранить Пользователя",
+                    "edit_user_modal_title": "Редактировать Пользователя",
+                    "update_user": "Обновить Пользователя",
+                    "user_info": "Информация о Пользователе",
+                    "basic_info": "Основная Информация",
+                    "created_at": "Дата Создания",
+                    "close": "Закрыть",
+                    "total_users_stat": "Всего Пользователей",
+                    "managers_stat": "Менеджеры",
+                    "supervisors": "Супервайзеры",
+                    "active": "Активные",
+                    "no_users": "Нет зарегистрированных пользователей",
+                    "add_new_user": "Добавить нового пользователя",
+                    "view_details": "Просмотреть детали",
+                    "edit_user": "Редактировать пользователя",
+                    "delete_user": "Удалить пользователя",
+                    "email_already_exists": "Email уже существует",
+                    "password_mismatch": "Пароли не совпадают",
+                    "user_added_success": "Пользователь успешно добавлен",
+                    "user_updated_success": "Пользователь успешно обновлен",
+                    "user_deleted_success": "Пользователь успешно удален",
+                    "confirm_delete": "Вы уверены, что хотите удалить этого пользователя?",
+                    "user_not_found": "Пользователь не найден",
+                    "cannot_delete_current_user": "Нельзя удалить текущего пользователя"
+                },
+                'ar': {
+                    "users_title": "إدارة المستخدمين",
+                    "system_name": "نظام المخازن",
+                    "system_integration": "الإدارة المتكاملة",
+                    "user_role": "مدير النظام",
+                    "dashboard": "لوحة التحكم",
+                    "inventory_management": "إدارة المخزون",
+                    "daily_operations": "العمليات اليومية",
+                    "reports_analysis": "التقارير والتحليل",
+                    "warehouse_management": "إدارة المخازن",
+                    "users": "المستخدمون",
+                    "settings": "الإعدادات",
+                    "logout": "تسجيل الخروج",
+                    "total_users": "إجمالي المستخدمين",
+                    "managers": "المديرين",
+                    "add_user": "إضافة مستخدم",
+                    "users_list": "قائمة المستخدمين",
+                    "export_excel": "تصدير Excel",
+                    "refresh": "تحديث",
+                    "search_users_placeholder": "ابحث في المستخدمين...",
+                    "all_roles": "جميع الأدوار",
+                    "manager": "مدير",
+                    "supervisor": "مشرف",
+                    "employee": "موظف",
+                    "all_statuses": "جميع الحالات",
+                    "active_status": "نشط",
+                    "inactive": "غير نشط",
+                    "name": "الاسم",
+                    "email": "البريد الإلكتروني",
+                    "phone": "الهاتف",
+                    "role": "الدور",
+                    "warehouse": "المخزن",
+                    "status": "الحالة",
+                    "actions": "الإجراءات",
+                    "loading_users": "جاري تحميل المستخدمين...",
+                    "user": "مستخدم",
+                    "previous": "السابق",
+                    "next": "التالي",
+                    "add_user_modal_title": "إضافة مستخدم جديد",
+                    "full_name": "الاسم الكامل *",
+                    "email_address": "البريد الإلكتروني *",
+                    "phone_number": "رقم الهاتف *",
+                    "select_role": "اختر الدور",
+                    "select_warehouse": "اختر المخزن",
+                    "select_status": "اختر الحالة",
+                    "password": "كلمة المرور *",
+                    "confirm_password": "تأكيد كلمة المرور *",
+                    "permissions": "الصلاحيات",
+                    "password_hint": "يجب أن تكون 8 أحرف على الأقل",
+                    "inventory_management": "إدارة المخزون",
+                    "daily_operations": "العمليات اليومية",
+                    "reports": "التقارير",
+                    "users_management_permission": "إدارة المستخدمين",
+                    "form_errors_title": "يوجد أخطاء في النموذج:",
+                    "cancel": "إلغاء",
+                    "save_user": "حفظ المستخدم",
+                    "edit_user_modal_title": "تعديل المستخدم",
+                    "update_user": "تحديث المستخدم",
+                    "user_info": "معلومات المستخدم",
+                    "basic_info": "المعلومات الأساسية",
+                    "created_at": "تاريخ الإنشاء",
+                    "close": "إغلاق",
+                    "total_users_stat": "إجمالي المستخدمين",
+                    "managers_stat": "المديرين",
+                    "supervisors": "المشرفين",
+                    "active": "نشطين",
+                    "no_users": "لا توجد مستخدمين مسجلين",
+                    "add_new_user": "إضافة مستخدم جديد",
+                    "view_details": "عرض التفاصيل",
+                    "edit_user": "تعديل المستخدم",
+                    "delete_user": "حذف المستخدم",
+                    "email_already_exists": "البريد الإلكتروني مستخدم بالفعل",
+                    "password_mismatch": "كلمة المرور غير متطابقة",
+                    "user_added_success": "تم إضافة المستخدم بنجاح",
+                    "user_updated_success": "تم تحديث المستخدم بنجاح",
+                    "user_deleted_success": "تم حذف المستخدم بنجاح",
+                    "confirm_delete": "هل أنت متأكد من حذف هذا المستخدم؟",
+                    "user_not_found": "لم يتم العثور على المستخدم",
+                    "cannot_delete_current_user": "لا يمكن حذف المستخدم الحالي"
+                }
+            },
+            
+            // Initialize the language switcher
+            init: function() {
+                this.loadSavedLanguage();
+                this.setupEventListeners();
+            },
+            
+            // Load saved language from localStorage or browser
+            loadSavedLanguage: function() {
+                const savedLang = localStorage.getItem('preferredLang');
+                const browserLang = navigator.language.split('-')[0];
+                const availableLangs = Object.keys(this.languages);
+                
+                let langToLoad = savedLang;
+                
+                if (!langToLoad || !availableLangs.includes(langToLoad)) {
+                    langToLoad = availableLangs.includes(browserLang) ? browserLang : 'ar';
+                }
+                
+                this.switchLanguage(langToLoad);
+            },
+            
+            // Switch to a specific language
+            switchLanguage: async function(langCode) {
+                if (this.currentLang === langCode) return;
+                
+                console.log('Switching to language:', langCode);
+                
+                try {
+                    // Use built-in translations
+                    if (this.builtInTranslations[langCode]) {
+                        this.translations[langCode] = this.builtInTranslations[langCode];
+                    } else {
+                        // Fallback to Arabic if no built-in translation
+                        this.translations[langCode] = this.builtInTranslations['ar'];
+                    }
+                    
+                    // Update current language
+                    this.currentLang = langCode;
+                    
+                    // Save preference
+                    localStorage.setItem('preferredLang', langCode);
+                    
+                    // Apply translations
+                    this.applyTranslations(this.translations[langCode]);
+                    
+                    // Update UI direction and language
+                    this.updatePageDirection(langCode);
+                    
+                    // Update active button
+                    this.updateActiveButton(langCode);
+                    
+                    // Update page title
+                    if (this.translations[langCode].users_title) {
+                        document.title = this.translations[langCode].users_title;
+                    }
+                    
+                    console.log('Language switched to:', langCode);
+                    
+                } catch (error) {
+                    console.error('Failed to load language:', error);
+                    // Fallback to built-in translations
+                    if (this.builtInTranslations[langCode]) {
+                        this.translations[langCode] = this.builtInTranslations[langCode];
+                        this.currentLang = langCode;
+                        this.applyTranslations(this.translations[langCode]);
+                        this.updatePageDirection(langCode);
+                        this.updateActiveButton(langCode);
+                    } else if (langCode !== 'ar') {
+                        this.switchLanguage('ar');
+                    }
+                }
+            },
+            
+            // Apply translations to all elements
+            applyTranslations: function(translationData) {
+                // Translate text elements
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    if (translationData[key]) {
+                        element.textContent = translationData[key];
+                    } else {
+                        console.warn('Translation key not found:', key);
+                    }
+                });
+                
+                // Translate placeholders
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                    const key = element.getAttribute('data-i18n-placeholder');
+                    if (translationData[key]) {
+                        element.placeholder = translationData[key];
+                    }
+                });
+                
+                // Translate select options
+                document.querySelectorAll('option[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    if (translationData[key]) {
+                        element.textContent = translationData[key];
+                    }
+                });
+            },
+            
+            // Update page direction (RTL/LTR)
+            updatePageDirection: function(langCode) {
+                const html = document.documentElement;
+                const body = document.body;
+                
+                // Remove existing direction classes
+                body.classList.remove('ltr');
+                
+                if (langCode === 'ar') {
+                    html.dir = 'rtl';
+                    html.lang = 'ar';
+                } else {
+                    html.dir = 'ltr';
+                    html.lang = langCode;
+                    body.classList.add('ltr');
+                }
+                
+                // Force reflow to ensure styles are applied correctly
+                document.body.offsetHeight;
+            },
+            
+            // Update active language button
+            updateActiveButton: function(langCode) {
+                document.querySelectorAll('.lang-btn').forEach(button => {
+                    button.classList.remove('active');
+                    if (button.getAttribute('data-lang') === langCode) {
+                        button.classList.add('active');
+                    }
+                });
+            },
+            
+            // Setup event listeners for language buttons
+            setupEventListeners: function() {
+                document.querySelectorAll('.lang-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const lang = e.target.getAttribute('data-lang');
+                        this.switchLanguage(lang);
+                    });
+                });
+            }
+        };
+    </script>
+    
+    <!-- Custom JS -->
+    <script>
+        // WMS Global Object
+        const WMS = {
+            // Sidebar Management
+            toggleSidebar: function() {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.querySelector('.main-content');
+                if (sidebar) sidebar.classList.toggle('hidden');
+                if (mainContent) mainContent.classList.toggle('full-width');
+            },
+            
+            // Modal Management
+            openModal: function(modalId) {
+                const modalElement = document.getElementById(modalId);
+                if (modalElement) {
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                    modal.show();
+                }
+            },
+            
+            closeModal: function(modalId) {
+                const modalElement = document.getElementById(modalId);
+                if (modalElement) {
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) {
+                        modal.hide();
+                    }
+                }
+            },
+            
+            // Alert System
+            showAlert: function(message, type = 'info', duration = 5000) {
+                const alertContainer = document.getElementById('alertContainer');
+                
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-custom fade-in`;
+                alert.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'} me-2"></i>
+                        <div class="flex-grow-1">${message}</div>
+                        <button class="btn btn-link text-${type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'warning' ? 'warning' : 'info'} p-0" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                alertContainer.appendChild(alert);
+                
+                // Auto remove after duration
+                if (duration > 0) {
+                    setTimeout(() => {
+                        if (alert.parentElement) {
+                            alert.remove();
+                        }
+                    }, duration);
+                }
+            },
+            
+            // Confirm Action
+            confirmAction: function(message, callback) {
+                if (confirm(message)) {
+                    callback();
+                }
+            },
+            
+            // Format Numbers
+            formatNumber: function(num) {
+                return new Intl.NumberFormat('ar-EG').format(num);
+            },
+            
+            // Fetch Data (mock function)
+            fetchData: async function(endpoint) {
+                console.log(`Fetching data from: ${endpoint}`);
+                
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Mock data for demonstration
+                if (endpoint.includes('users')) {
+                    const mockUsers = [
+                        {
+                            id: 'U001',
+                            name: 'أحمد محمود',
+                            email: 'ahmed@company.com',
+                            phone: '+201012345678',
+                            role: 'مدير',
+                            warehouse_id: 'W001',
+                            status: 'نشط',
+                            avatar_color: 'avatar-manager',
+                            created_at: '2024-01-15',
+                            permissions: ['إدارة المخزون', 'العمليات اليومية', 'التقارير', 'إدارة المستخدمين']
+                        },
+                        {
+                            id: 'U002',
+                            name: 'محمد السيد',
+                            email: 'mohamed@company.com',
+                            phone: '+201098765432',
+                            role: 'مشرف',
+                            warehouse_id: 'W002',
+                            status: 'نشط',
+                            avatar_color: 'avatar-supervisor',
+                            created_at: '2024-01-20',
+                            permissions: ['إدارة المخزون', 'العمليات اليومية', 'التقارير']
+                        },
+                        {
+                            id: 'U003',
+                            name: 'سارة أحمد',
+                            email: 'sara@company.com',
+                            phone: '+201055443322',
+                            role: 'موظف',
+                            warehouse_id: 'W001',
+                            status: 'نشط',
+                            avatar_color: 'avatar-employee',
+                            created_at: '2024-02-01',
+                            permissions: ['إدارة المخزون', 'العمليات اليومية']
+                        },
+                        {
+                            id: 'U004',
+                            name: 'علي حسن',
+                            email: 'ali@company.com',
+                            phone: '+201066778899',
+                            role: 'موظف',
+                            warehouse_id: 'W003',
+                            status: 'غير نشط',
+                            avatar_color: 'avatar-employee',
+                            created_at: '2024-02-15',
+                            permissions: ['إدارة المخزون']
+                        },
+                        {
+                            id: 'U005',
+                            name: 'مريم محمد',
+                            email: 'mariam@company.com',
+                            phone: '+201077889900',
+                            role: 'مشرف',
+                            warehouse_id: 'W004',
+                            status: 'نشط',
+                            avatar_color: 'avatar-supervisor',
+                            created_at: '2024-03-01',
+                            permissions: ['إدارة المخزون', 'العمليات اليومية', 'التقارير']
+                        }
+                    ];
+                    
+                    return {
+                        success: true,
+                        data: mockUsers
+                    };
+                }
+                
+                if (endpoint.includes('warehouses')) {
+                    return {
+                        success: true,
+                        data: [
+                            { id: 'W001', name: 'المخزن الرئيسي' },
+                            { id: 'W002', name: 'مخزن التوزيع' },
+                            { id: 'W003', name: 'مخزن التجزئة' },
+                            { id: 'W004', name: 'مخزن الصيانة' }
+                        ]
+                    };
+                }
+                
+                return { success: true, data: [] };
+            },
+            
+            // Post Data (mock function)
+            postData: async function(endpoint, data) {
+                console.log(`Posting data to: ${endpoint}`, data);
+                
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                return {
+                    success: true,
+                    message: 'تمت العملية بنجاح',
+                    data: { ...data, id: 'U' + Date.now().toString().slice(-6) }
+                };
+            },
+            
+            // Put Data (mock function)
+            putData: async function(endpoint, id, data) {
+                console.log(`Updating data at: ${endpoint}, ID: ${id}`, data);
+                
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                return {
+                    success: true,
+                    message: 'تم التحديث بنجاح',
+                    data: { ...data, id: id }
+                };
+            },
+            
+            // Delete Data (mock function)
+            deleteData: async function(endpoint, id) {
+                console.log(`Deleting data from: ${endpoint}, ID: ${id}`);
+                
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                return {
+                    success: true,
+                    message: 'تم الحذف بنجاح'
+                };
+            },
+            
+            // Export to Excel
+            exportTableToExcel: function(tableId, filename) {
+                const table = document.getElementById(tableId);
+                if (!table) return;
+                
+                let html = table.outerHTML;
+                let blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+                let url = URL.createObjectURL(blob);
+                
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showAlert('تم تصدير البيانات بنجاح', 'success');
+            }
+        };
+        
+        // Global variables
+        let users = [];
+        let warehouses = [];
+        let currentEditUserId = null;
+        let currentSortColumn = 'name';
+        let currentSortDirection = 'asc';
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize language switcher
+            languageSwitcher.init();
+            
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Setup event listeners
+            document.getElementById('searchUser').addEventListener('input', filterUsers);
+            document.getElementById('roleFilter').addEventListener('change', filterUsers);
+            document.getElementById('statusFilter').addEventListener('change', filterUsers);
+            
+            // Load data
+            await loadUsers();
+            
+            // Show welcome message
+            setTimeout(() => {
+                const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+                if (translations && translations.users_title) {
+                    WMS.showAlert(`مرحباً بك في صفحة ${translations.users_title}`, 'info');
+                }
+            }, 1000);
+        });
+        
+        // Load users
+        async function loadUsers() {
+            try {
+                // Load users and warehouses
+                const [usersData, warehousesData] = await Promise.all([
+                    WMS.fetchData('users?limit=100'),
+                    WMS.fetchData('warehouses?limit=100')
+                ]);
+                
+                if (usersData && usersData.data) {
+                    users = usersData.data;
+                    if (warehousesData && warehousesData.data) {
+                        warehouses = warehousesData.data;
+                    }
+                    displayUsers();
+                    updateStats();
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في تحميل البيانات:', error);
+                const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+                WMS.showAlert(translations?.load_error || 'حدث خطأ في تحميل البيانات', 'danger');
+            }
+        }
+        
+        // Display users in table
+        function displayUsers(usersToDisplay = users) {
+            const tbody = document.getElementById('usersTableBody');
+            if (!tbody) return;
+            
+            const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+            
+            if (usersToDisplay.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-2" data-i18n="no_users">لا توجد مستخدمين مسجلين</p>
+                            <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">
+                                <i class="fas fa-user-plus me-2"></i><span data-i18n="add_new_user">إضافة مستخدم جديد</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('totalItems').textContent = '0';
+                return;
+            }
+            
+            // Sort users
+            const sortedUsers = sortUsersArray(usersToDisplay, currentSortColumn, currentSortDirection);
+            
+            tbody.innerHTML = sortedUsers.map(user => {
+                const warehouse = getWarehouseName(user.warehouse_id);
+                const roleBadge = {
+                    'مدير': 'badge-danger',
+                    'مشرف': 'badge-warning',
+                    'موظف': 'badge-info'
+                }[user.role] || 'badge-secondary';
+                
+                const statusBadge = user.status === 'نشط' ? 'badge-success' : 'badge-danger';
+                const avatarClass = user.avatar_color || getAvatarClassByRole(user.role);
+                const initials = getInitials(user.name);
+                
+                return `
+                    <tr class="fade-in">
+                        <td>
+                            <div class="${avatarClass} user-avatar">${initials}</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold">${user.name}</div>
+                            <small class="text-muted">ID: ${user.id}</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-envelope text-muted me-2"></i>
+                                ${user.email}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-phone text-muted me-2"></i>
+                                ${user.phone}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge ${roleBadge} badge-custom">
+                                <i class="fas ${user.role === 'مدير' ? 'fa-user-shield' : user.role === 'مشرف' ? 'fa-user-tie' : 'fa-user'} ms-1"></i>
+                                ${translations?.[user.role.toLowerCase()] || user.role}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-warehouse text-muted me-2"></i>
+                                ${warehouse}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge ${statusBadge} badge-custom">
+                                <i class="fas ${user.status === 'نشط' ? 'fa-check-circle' : 'fa-times-circle'} ms-1"></i>
+                                ${translations?.[user.status === 'نشط' ? 'active_status' : 'inactive'] || user.status}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="viewUser('${user.id}')" class="btn-action btn-view" data-bs-toggle="tooltip" title="${translations?.view_details || 'عرض التفاصيل'}">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="editUser('${user.id}')" class="btn-action btn-edit" data-bs-toggle="tooltip" title="${translations?.edit_user || 'تعديل المستخدم'}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteUser('${user.id}')" class="btn-action btn-delete" data-bs-toggle="tooltip" title="${translations?.delete_user || 'حذف المستخدم'}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Update total items
+            document.getElementById('totalItems').textContent = WMS.formatNumber(usersToDisplay.length);
+        }
+        
+        // Sort users array
+        function sortUsersArray(usersArray, column, direction) {
+            return [...usersArray].sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(column) {
+                    case 'name':
+                        aValue = a.name;
+                        bValue = b.name;
+                        break;
+                    case 'email':
+                        aValue = a.email;
+                        bValue = b.email;
+                        break;
+                    case 'phone':
+                        aValue = a.phone;
+                        bValue = b.phone;
+                        break;
+                    case 'role':
+                        aValue = a.role;
+                        bValue = b.role;
+                        break;
+                    case 'warehouse':
+                        aValue = getWarehouseName(a.warehouse_id);
+                        bValue = getWarehouseName(b.warehouse_id);
+                        break;
+                    case 'status':
+                        aValue = a.status;
+                        bValue = b.status;
+                        break;
+                    default:
+                        aValue = a.name;
+                        bValue = b.name;
+                }
+                
+                if (direction === 'asc') {
+                    return aValue.localeCompare(bValue, 'ar');
+                } else {
+                    return bValue.localeCompare(aValue, 'ar');
+                }
+            });
+        }
+        
+        // Sort users by column
+        function sortUsers(column) {
+            if (currentSortColumn === column) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = column;
+                currentSortDirection = 'asc';
+            }
+            
+            // Update sort icons
+            document.querySelectorAll('th i').forEach(icon => {
+                icon.className = 'fas fa-sort ms-1 text-muted';
+            });
+            
+            const currentHeader = document.querySelector(`th[onclick="sortUsers('${column}')"]`);
+            const icon = currentHeader?.querySelector('i');
+            if (icon) {
+                icon.className = `fas fa-sort-${currentSortDirection === 'asc' ? 'up' : 'down'} ms-1 text-primary`;
+            }
+            
+            displayUsers();
+        }
+        
+        // Get warehouse name by ID
+        function getWarehouseName(warehouseId) {
+            if (!warehouseId) return 'غير محدد';
+            const warehouse = warehouses.find(w => w.id === warehouseId);
+            return warehouse ? warehouse.name : 'غير محدد';
+        }
+        
+        // Get avatar class by role
+        function getAvatarClassByRole(role) {
+            switch(role) {
+                case 'مدير': return 'avatar-manager';
+                case 'مشرف': return 'avatar-supervisor';
+                case 'موظف': return 'avatar-employee';
+                default: return 'avatar-employee';
+            }
+        }
+        
+        // Get initials from name
+        function getInitials(name) {
+            return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+        }
+        
+        // Update statistics
+        function updateStats(usersToCount = users) {
+            const total = usersToCount.length;
+            const managers = usersToCount.filter(u => u.role === 'مدير').length;
+            const supervisors = usersToCount.filter(u => u.role === 'مشرف').length;
+            const active = usersToCount.filter(u => u.status === 'نشط').length;
+            
+            document.getElementById('totalUsers').textContent = WMS.formatNumber(total);
+            document.getElementById('totalManagers').textContent = WMS.formatNumber(managers);
+            document.getElementById('statsTotal').textContent = WMS.formatNumber(total);
+            document.getElementById('statsManagers').textContent = WMS.formatNumber(managers);
+            document.getElementById('statsSupervisors').textContent = WMS.formatNumber(supervisors);
+            document.getElementById('statsActive').textContent = WMS.formatNumber(active);
+        }
+        
+        // Filter users
+        function filterUsers() {
+            const searchTerm = document.getElementById('searchUser').value.toLowerCase();
+            const roleFilter = document.getElementById('roleFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            const filtered = users.filter(user => {
+                const matchesSearch = !searchTerm || 
+                    user.name.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    user.phone.includes(searchTerm);
+                
+                const matchesRole = !roleFilter || user.role === roleFilter;
+                const matchesStatus = !statusFilter || user.status === statusFilter;
+                
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+            
+            displayUsers(filtered);
+            updateStats(filtered);
+        }
+        
+        // Open add user modal
+        function openAddUserModal() {
+            currentEditUserId = null;
+            const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+            
+            document.getElementById('modalTitle').textContent = translations?.add_user_modal_title || 'إضافة مستخدم جديد';
+            document.getElementById('saveButtonText').textContent = translations?.save_user || 'حفظ المستخدم';
+            document.getElementById('addUserForm').reset();
+            
+            // Reset errors
+            document.getElementById('addUserForm').querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.getElementById('formErrors').classList.add('d-none');
+            
+            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            modal.show();
+        }
+        
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('userPassword');
+            const icon = event.target.querySelector('i') || event.target;
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+        
+        // Toggle confirm password visibility
+        function toggleConfirmPasswordVisibility() {
+            const passwordInput = document.getElementById('confirmPassword');
+            const icon = event.target.querySelector('i') || event.target;
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+        
+        // Save user
+        async function saveUser() {
+            const form = document.getElementById('addUserForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+            
+            // Reset errors
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.getElementById('formErrors').classList.add('d-none');
+            
+            // Get form values
+            const name = document.getElementById('userName').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            const phone = document.getElementById('userPhone').value.trim();
+            const role = document.getElementById('userRole').value;
+            const warehouse = document.getElementById('userWarehouse').value;
+            const status = document.getElementById('userStatus').value;
+            const password = document.getElementById('userPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Get permissions
+            const permissions = [];
+            if (document.getElementById('permInventory').checked) permissions.push('إدارة المخزون');
+            if (document.getElementById('permTransactions').checked) permissions.push('العمليات اليومية');
+            if (document.getElementById('permReports').checked) permissions.push('التقارير');
+            if (document.getElementById('permUsers').checked) permissions.push('إدارة المستخدمين');
+            
+            // Validation
+            const errors = [];
+            
+            if (!name) errors.push(translations?.full_name_required || 'الاسم الكامل مطلوب');
+            if (!email) errors.push(translations?.email_required || 'البريد الإلكتروني مطلوب');
+            if (!phone) errors.push(translations?.phone_required || 'رقم الهاتف مطلوب');
+            if (!role) errors.push(translations?.role_required || 'الدور مطلوب');
+            if (!status) errors.push(translations?.status_required || 'الحالة مطلوبة');
+            if (!password) errors.push(translations?.password_required || 'كلمة المرور مطلوبة');
+            if (password.length < 8) errors.push(translations?.password_length || 'كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+            if (password !== confirmPassword) errors.push(translations?.password_mismatch || 'كلمة المرور غير متطابقة');
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) errors.push(translations?.invalid_email || 'البريد الإلكتروني غير صالح');
+            
+            // Check if email already exists (for new users)
+            if (!currentEditUserId) {
+                const emailExists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
+                if (emailExists) errors.push(translations?.email_already_exists || 'البريد الإلكتروني مستخدم بالفعل');
+            }
+            
+            if (errors.length > 0) {
+                document.getElementById('errorList').innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+                document.getElementById('formErrors').classList.remove('d-none');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (translations?.saving || 'جاري الحفظ...');
+                
+                const userData = {
+                    name,
+                    email,
+                    phone,
+                    role,
+                    warehouse_id: warehouse || null,
+                    status,
+                    permissions,
+                    avatar_color: getAvatarClassByRole(role),
+                    created_at: currentEditUserId ? undefined : new Date().toISOString().split('T')[0]
+                };
+                
+                let result;
+                
+                if (currentEditUserId) {
+                    // Update existing user
+                    result = await WMS.putData('users', currentEditUserId, userData);
+                } else {
+                    // Add new user
+                    result = await WMS.postData('users', userData);
+                }
+                
+                if (result && result.success) {
+                    const successMessage = currentEditUserId ? 
+                        (translations?.user_updated_success || 'تم تحديث المستخدم بنجاح') : 
+                        (translations?.user_added_success || 'تم إضافة المستخدم بنجاح');
+                    
+                    WMS.showAlert(successMessage, 'success');
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+                    if (modal) modal.hide();
+                    
+                    // Refresh data
+                    await loadUsers();
+                } else {
+                    throw new Error(result?.message || 'فشل في حفظ المستخدم');
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في حفظ المستخدم:', error);
+                WMS.showAlert(error.message || 'حدث خطأ أثناء حفظ المستخدم', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                const buttonText = currentEditUserId ? 
+                    (translations?.update_user || 'تحديث المستخدم') : 
+                    (translations?.save_user || 'حفظ المستخدم');
+                submitBtn.innerHTML = '<i class="fas fa-save"></i><span id="saveButtonText">' + buttonText + '</span>';
+            }
+        }
+        
+        // Edit user
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) {
+                const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+                WMS.showAlert(translations?.user_not_found || 'لم يتم العثور على المستخدم', 'warning');
+                return;
+            }
+            
+            currentEditUserId = id;
+            
+            const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+            document.getElementById('modalTitle').textContent = translations?.edit_user_modal_title || 'تعديل المستخدم';
+            document.getElementById('saveButtonText').textContent = translations?.update_user || 'تحديث المستخدم';
+            
+            // Fill form with user data
+            document.getElementById('userName').value = user.name;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userPhone').value = user.phone;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('userWarehouse').value = user.warehouse_id || '';
+            document.getElementById('userStatus').value = user.status;
+            document.getElementById('userPassword').value = '********'; // Placeholder
+            document.getElementById('confirmPassword').value = '********';
+            
+            // Set permissions
+            if (user.permissions) {
+                document.getElementById('permInventory').checked = user.permissions.includes('إدارة المخزون');
+                document.getElementById('permTransactions').checked = user.permissions.includes('العمليات اليومية');
+                document.getElementById('permReports').checked = user.permissions.includes('التقارير');
+                document.getElementById('permUsers').checked = user.permissions.includes('إدارة المستخدمين');
+            }
+            
+            // Reset errors
+            document.getElementById('addUserForm').querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.getElementById('formErrors').classList.add('d-none');
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            modal.show();
+        }
+        
+        // View user details
+        function viewUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) {
+                const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+                WMS.showAlert(translations?.user_not_found || 'لم يتم العثور على المستخدم', 'warning');
+                return;
+            }
+            
+            const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+            
+            // Fill view modal with user data
+            document.getElementById('viewUserName').textContent = user.name;
+            document.getElementById('viewUserRole').textContent = user.role;
+            document.getElementById('viewUserStatus').textContent = user.status;
+            document.getElementById('viewUserEmail').textContent = user.email;
+            document.getElementById('viewUserPhone').textContent = user.phone;
+            document.getElementById('viewUserWarehouse').textContent = getWarehouseName(user.warehouse_id);
+            document.getElementById('viewUserCreatedAt').textContent = user.created_at;
+            
+            // Set avatar
+            const avatarDiv = document.getElementById('viewUserAvatar');
+            avatarDiv.className = `${user.avatar_color || getAvatarClassByRole(user.role)} user-avatar`;
+            avatarDiv.textContent = getInitials(user.name);
+            
+            // Set permissions
+            const permissionsDiv = document.getElementById('viewUserPermissions');
+            if (user.permissions && user.permissions.length > 0) {
+                permissionsDiv.innerHTML = user.permissions.map(perm => {
+                    const permissionText = translations?.[perm] || perm;
+                    return `<span class="badge badge-info badge-custom">${permissionText}</span>`;
+                }).join('');
+            } else {
+                permissionsDiv.innerHTML = '<span class="text-muted">' + (translations?.no_permissions || 'لا توجد صلاحيات محددة') + '</span>';
+            }
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('viewUserModal'));
+            modal.show();
+        }
+        
+        // Delete user
+        async function deleteUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+            
+            const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+            
+            // Prevent deleting the current user
+            if (user.email === 'ahmed@company.com') {
+                WMS.showAlert(translations?.cannot_delete_current_user || 'لا يمكن حذف المستخدم الحالي', 'warning');
+                return;
+            }
+            
+            WMS.confirmAction(translations?.confirm_delete || `هل أنت متأكد من حذف المستخدم "${user.name}"؟`, async () => {
+                const result = await WMS.deleteData('users', id);
+                if (result && result.success) {
+                    WMS.showAlert(translations?.user_deleted_success || 'تم حذف المستخدم بنجاح', 'success');
+                    
+                    // Remove from local array and refresh display
+                    users = users.filter(u => u.id !== id);
+                    displayUsers();
+                    updateStats();
+                }
+            });
+        }
+        
+        // Export users to Excel
+        function exportUsers() {
+            WMS.exportTableToExcel('usersTable', 'المستخدمين.xlsx');
+        }
+        
+        // Refresh users
+        function refreshUsers() {
+            loadUsers();
+            const translations = languageSwitcher.translations[languageSwitcher.currentLang];
+            WMS.showAlert(translations?.data_refreshed || 'تم تحديث البيانات', 'info');
+        }
+        
+        // Export functions to global scope
+        window.openAddUserModal = openAddUserModal;
+        window.editUser = editUser;
+        window.viewUser = viewUser;
+        window.deleteUser = deleteUser;
+        window.exportUsers = exportUsers;
+        window.refreshUsers = refreshUsers;
+        window.filterUsers = filterUsers;
+        window.sortUsers = sortUsers;
+        window.togglePasswordVisibility = togglePasswordVisibility;
+        window.toggleConfirmPasswordVisibility = toggleConfirmPasswordVisibility;
+        window.WMS = WMS;
+    </script>
+</body>
+</html>

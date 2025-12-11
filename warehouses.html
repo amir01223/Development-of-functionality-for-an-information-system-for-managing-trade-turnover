@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">إدارة المخازن - نظام إدارة المخازن</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Cairo (URL corrigée) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --sidebar-width: 280px;
+        }
+        
+        /* Language Switcher */
+        .language-switcher-header {
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-left: 15px;
+        }
+        
+        .lang-btn {
+            padding: 3px 8px;
+            border: 2px solid transparent;
+            background: transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 11px;
+            color: var(--dark-color);
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+            border-color: var(--secondary-color);
+        }
+        
+        /* RTL/LTR Support */
+        body.ltr {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        body.ltr .header-title,
+        body.ltr .warehouse-title,
+        body.ltr .warehouse-details,
+        body.ltr .card-header-custom h5,
+        body.ltr .form-label-custom,
+        body.ltr .modal-title-custom,
+        body.ltr .sidebar-user div,
+        body.ltr .nav-link span,
+        body.ltr .sidebar-logo h3,
+        body.ltr .sidebar-logo small,
+        body.ltr .main-footer .text-white-50,
+        body.ltr .detail-label,
+        body.ltr .detail-value,
+        body.ltr .warehouse-code,
+        body.ltr .stats-cards .stat-label,
+        body.ltr .stats-cards .stat-value,
+        body.ltr .text-end {
+            text-align: left;
+            direction: ltr;
+        }
+        
+        body.ltr .sidebar-nav {
+            text-align: left;
+        }
+        
+        body.ltr .nav-link {
+            flex-direction: row;
+        }
+        
+        body.ltr .nav-link i {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+        
+        body.ltr .nav-link:hover {
+            transform: translateX(5px);
+        }
+        
+        body.ltr #sidebar {
+            right: auto;
+            left: 0;
+            border-left: none;
+            border-right: 4px solid var(--secondary-color);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        body.ltr #sidebar.hidden {
+            transform: translateX(calc(-1 * var(--sidebar-width)));
+        }
+        
+        body.ltr .main-content {
+            margin-right: 0;
+            margin-left: var(--sidebar-width);
+        }
+        
+        body.ltr .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        body.ltr .header-title i {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+        
+        body.ltr .language-switcher-header {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+        
+        body.ltr .action-buttons {
+            flex-direction: row;
+        }
+        
+        body.ltr .text-end {
+            text-align: left !important;
+        }
+        
+        body.ltr .text-start {
+            text-align: right !important;
+        }
+        
+        body.ltr .dropdown-menu {
+            text-align: left;
+        }
+        
+        body.ltr .input-group > .input-group-text {
+            border-left: 1px solid #ced4da;
+            border-right: none;
+        }
+        
+        body.ltr .input-group > .form-control {
+            border-right: 1px solid #ced4da;
+            border-left: none;
+        }
+        
+        body.ltr .btn-custom {
+            flex-direction: row;
+        }
+        
+        body.ltr .btn-custom i {
+            order: -1;
+        }
+        
+        body.ltr .d-flex.gap-3 {
+            flex-direction: row;
+        }
+        
+        body.ltr .modal-footer {
+            flex-direction: row-reverse;
+        }
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        /* ==================== SIDEBAR CORRECTIONS ==================== */
+        
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, #1a252f 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            max-height: 100vh;
+            padding: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1050 !important;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--secondary-color);
+            right: 0;
+            top: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        #sidebar.hidden {
+            transform: translateX(var(--sidebar-width));
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sidebar-logo i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-user {
+            padding: 1rem 1.5rem;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-user img {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        /* ==================== NAVIGATION - FIX AFFICHAGE ==================== */
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+            text-align: right;
+            flex-grow: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        
+        body.ltr .sidebar-nav {
+            text-align: left;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 1rem 1.5rem;
+            margin: 0.2rem 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-5px);
+        }
+        
+        body.ltr .nav-link:hover {
+            transform: translateX(5px);
+        }
+        
+        .nav-link.active {
+            color: white;
+            background: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .nav-link i {
+            font-size: 1.2rem;
+            width: 24px;
+            flex-shrink: 0;
+        }
+        
+        .main-content {
+            margin-right: var(--sidebar-width);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-content.full-width {
+            margin-right: 0;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .header-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-title i {
+            color: var(--secondary-color);
+            margin-left: 10px;
+        }
+        
+        /* Card Styles */
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        /* Warehouse Cards Grid */
+        .warehouses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .warehouse-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .warehouse-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--secondary-color));
+        }
+        
+        .warehouse-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: var(--secondary-color);
+        }
+        
+        .warehouse-card.active::before {
+            background: linear-gradient(90deg, transparent, var(--success-color));
+        }
+        
+        .warehouse-card.inactive::before {
+            background: linear-gradient(90deg, transparent, #6c757d);
+        }
+        
+        .warehouse-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .warehouse-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        .warehouse-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.15), rgba(39, 174, 96, 0.25));
+            color: var(--success-color);
+        }
+        
+        .status-inactive {
+            background: linear-gradient(135deg, rgba(108, 117, 125, 0.15), rgba(108, 117, 125, 0.25));
+            color: #6c757d;
+        }
+        
+        .warehouse-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .warehouse-code {
+            font-size: 0.9rem;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 0.3rem 0.8rem;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .warehouse-details {
+            border-top: 1px solid #e9ecef;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        
+        .detail-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .capacity-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+        
+        .capacity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color), #2980b9);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .capacity-low .capacity-fill {
+            background: linear-gradient(90deg, var(--warning-color), #f1c40f);
+        }
+        
+        .capacity-full .capacity-fill {
+            background: linear-gradient(90deg, var(--danger-color), #e74c3c);
+        }
+        
+        /* Button Styles */
+        .btn-custom {
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .btn-outline-light {
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .btn-outline-light:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-action {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.2));
+            color: var(--secondary-color);
+        }
+        
+        .btn-edit:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.2));
+            color: var(--danger-color);
+        }
+        
+        .btn-delete:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .modal-custom {
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content-custom {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .modal-header-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-bottom: none;
+            padding: 1.5rem;
+        }
+        
+        .modal-title-custom {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .btn-close-custom {
+            color: white;
+            opacity: 0.8;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-close-custom:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        
+        /* Form Styles */
+        .form-label-custom {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control-custom, .form-select-custom {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.15);
+        }
+        
+        /* Loading Animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Alert Styles */
+        .alert-custom {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 1rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        /* ==================== BOUTON LOGOUT - FIX POSITION ==================== */
+        
+        .logout-container {
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+            width: 100%;
+        }
+        
+        /* Responsive - Logique corrigée */
+        @media (max-width: 992px) {
+            #sidebar {
+                transform: translateX(var(--sidebar-width));
+                position: fixed;
+                z-index: 1050 !important;
+            }
+            
+            #sidebar.hidden {
+                transform: translateX(0) !important;
+            }
+            
+            body.ltr #sidebar {
+                transform: translateX(calc(-1 * var(--sidebar-width)));
+            }
+            
+            body.ltr #sidebar.hidden {
+                transform: translateX(0) !important;
+            }
+            
+            .main-content {
+                margin-right: 0 !important;
+                margin-left: 0 !important;
+            }
+            
+            .language-switcher-header {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.4rem;
+            }
+            
+            .card-header-custom {
+                padding: 1rem;
+            }
+            
+            .btn-custom {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .warehouses-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="d-flex flex-column">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-warehouse"></i>
+                <div>
+                    <h3 class="mb-0 fw-bold" id="systemName">نظام المخازن</h3>
+                    <small class="text-white-50" id="systemIntegration">الإدارة المتكاملة</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Info (URL corrigée) -->
+        <div class="sidebar-user d-flex align-items-center gap-3">
+            <img src="https://ui-avatars.com/api/?name=%D8%A3%D8%AD%D9%85%D8%AF%20%D9%85%D8%AD%D9%85%D9%88%D8%AF&background=3498db&color=fff&size=50&rounded=true" 
+                 class="rounded-circle" alt="User">
+            <div>
+                <h6 class="mb-0 fw-bold">أحمد محمود</h6>
+                <small class="text-white-50" id="userRole">مدير النظام</small>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="sidebar-nav flex-grow-1">
+            <a href="dashboard.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span id="navDashboard">لوحة التحكم</span>
+            </a>
+            <a href="inventory.html" class="nav-link">
+                <i class="fas fa-boxes"></i>
+                <span id="navInventory">إدارة المخزون</span>
+            </a>
+            <a href="transactions.html" class="nav-link">
+                <i class="fas fa-exchange-alt"></i>
+                <span id="navOperations">العمليات اليومية</span>
+            </a>
+            <a href="reports.html" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                <span id="navReports">التقارير والتحليل</span>
+            </a>
+            <a href="warehouses.html" class="nav-link active">
+                <i class="fas fa-warehouse"></i>
+                <span id="navWarehouses">إدارة المخازن</span>
+            </a>
+            <a href="users.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span id="navUsers">المستخدمون</span>
+            </a>
+            <a href="settings.html" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span id="navSettings">الإعدادات</span>
+            </a>
+        </nav>
+        
+        <!-- Logout Button - CORRECTED -->
+        <div class="logout-container">
+            <a href="index.html" class="btn btn-danger w-100 py-2 fw-bold d-flex align-items-center justify-content-center gap-2">
+                <i class="fas fa-sign-out-alt"></i>
+                <span id="navLogout">تسجيل الخروج</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="main-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <button onclick="WMS.toggleSidebar()" class="btn btn-outline-primary d-lg-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-warehouse"></i>
+                    <span id="mainTitle">إدارة المخازن</span>
+                </h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Language Switcher -->
+                <div class="language-switcher-header d-none d-lg-flex">
+                    <button class="lang-btn" data-lang="fr">FR</button>
+                    <button class="lang-btn active" data-lang="ar">AR</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="ru">RU</button>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="d-none d-md-flex gap-3">
+                    <div class="text-end">
+                        <small class="text-muted d-block" id="statsTotalLabel">إجمالي المخازن</small>
+                        <span class="fw-bold text-primary" id="totalWarehouses">0</span>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted d-block" id="statsActiveLabel">نشطة</small>
+                        <span class="fw-bold text-success" id="activeWarehouses">0</span>
+                    </div>
+                </div>
+                
+                <!-- Add Warehouse Button -->
+                <button onclick="openAddWarehouseModal()" class="btn btn-primary btn-custom">
+                    <i class="fas fa-plus"></i>
+                    <span id="btnAddWarehouse">إضافة مخزن جديد</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Alert Container -->
+        <div id="alertContainer" class="container mt-3"></div>
+
+        <!-- Main Content -->
+        <main class="container py-4">
+            <!-- Statistics Cards -->
+            <div class="stats-cards fade-in">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <h3 class="stat-value text-primary" id="statsTotal">0</h3>
+                    <p class="stat-label" id="statsTotalText">إجمالي المخازن</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 class="stat-value text-success" id="statsActive">0</h3>
+                    <p class="stat-label" id="statsActiveText">مخازن نشطة</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="stat-value text-warning" id="statsCapacity">0%</h3>
+                    <p class="stat-label" id="statsCapacityText">متوسط الامتلاء</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-info bg-opacity-10 text-info">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3 class="stat-value text-info" id="statsProducts">0</h3>
+                    <p class="stat-label" id="statsProductsText">منتجات في المخازن</p>
+                </div>
+            </div>
+
+            <!-- Warehouse Grid -->
+            <div class="card card-custom fade-in">
+                <div class="card-header-custom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        <span id="warehouseListTitle">قائمة المخازن</span>
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button onclick="exportWarehouses()" class="btn btn-success btn-custom">
+                            <i class="fas fa-file-excel"></i>
+                            <span id="btnExportExcel">تصدير Excel</span>
+                        </button>
+                        <button onclick="refreshWarehouses()" class="btn btn-outline-light btn-custom">
+                            <i class="fas fa-redo"></i>
+                            <span id="btnRefresh">تحديث</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Search and Filter -->
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" id="searchWarehouse" class="form-control border-start-0" 
+                                       placeholder="ابحث عن مخزن...">
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mt-2 mt-md-0">
+                            <select id="statusFilter" class="form-select form-select-custom">
+                                <option value="" id="filterAll">جميع الحالات</option>
+                                <option value="نشط" id="filterActive">نشط</option>
+                                <option value="غير نشط" id="filterInactive">غير نشط</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-3 mt-2 mt-md-0">
+                            <button onclick="filterWarehouses()" class="btn btn-primary w-100 btn-custom">
+                                <i class="fas fa-filter"></i>
+                                <span id="btnFilter">تصفية</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Warehouses Grid -->
+                    <div id="warehousesContainer" class="warehouses-grid">
+                        <div class="text-center text-muted py-5">
+                            <div class="loading-spinner mx-auto mb-3"></div>
+                            <p id="loadingText">جاري تحميل المخازن...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyState" class="text-center py-5 d-none">
+                        <i class="fas fa-warehouse fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-3" id="noWarehousesText">لا توجد مخازن مسجلة</p>
+                        <button onclick="openAddWarehouseModal()" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            <span id="btnAddWarehouse2">إضافة مخزن جديد</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Warehouse Modal -->
+    <div class="modal fade modal-custom" id="addWarehouseModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title modal-title-custom">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        <span id="modalAddTitle">إضافة مخزن جديد</span>
+                    </h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="addWarehouseForm" onsubmit="event.preventDefault(); addWarehouse();">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <!-- Warehouse Name -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelName">اسم المخزن *</label>
+                                <input type="text" class="form-control form-control-custom" id="warehouseName" required>
+                                <div class="invalid-feedback" id="nameError"></div>
+                            </div>
+                            
+                            <!-- Warehouse Code -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelCode">رمز المخزن *</label>
+                                <input type="text" class="form-control form-control-custom" id="warehouseCode" required>
+                                <div class="invalid-feedback" id="codeError"></div>
+                            </div>
+                            
+                            <!-- Location -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelLocation">الموقع *</label>
+                                <input type="text" class="form-control form-control-custom" id="warehouseLocation" required>
+                                <div class="invalid-feedback" id="locationError"></div>
+                            </div>
+                            
+                            <!-- Manager -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelManager">المدير المسؤول *</label>
+                                <input type="text" class="form-control form-control-custom" id="warehouseManager" required>
+                                <div class="invalid-feedback" id="managerError"></div>
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelPhone">رقم الهاتف *</label>
+                                <input type="tel" class="form-control form-control-custom" id="warehousePhone" required>
+                                <div class="invalid-feedback" id="phoneError"></div>
+                            </div>
+                            
+                            <!-- Capacity -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelCapacity">السعة التخزينية *</label>
+                                <input type="number" class="form-control form-control-custom" id="warehouseCapacity" min="1" required>
+                                <div class="invalid-feedback" id="capacityError"></div>
+                            </div>
+                            
+                            <!-- Status -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelStatus">الحالة *</label>
+                                <select class="form-select form-select-custom" id="warehouseStatus" required>
+                                    <option value="" id="optionSelectStatus">اختر الحالة</option>
+                                    <option value="نشط" id="optionActive">نشط</option>
+                                    <option value="غير نشط" id="optionInactive">غير نشط</option>
+                                </select>
+                                <div class="invalid-feedback" id="statusError"></div>
+                            </div>
+                            
+                            <!-- Type -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelType">نوع المخزن *</label>
+                                <select class="form-select form-select-custom" id="warehouseType" required>
+                                    <option value="" id="optionSelectType">اختر النوع</option>
+                                    <option value="رئيسي" id="optionMain">رئيسي</option>
+                                    <option value="فرعي" id="optionSubsidiary">فرعي</option>
+                                    <option value="توزيع" id="optionDistribution">توزيع</option>
+                                    <option value="بيع بالتجزئة" id="optionRetail">بيع بالتجزئة</option>
+                                </select>
+                                <div class="invalid-feedback" id="typeError"></div>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelEmail">البريد الإلكتروني</label>
+                                <input type="email" class="form-control form-control-custom" id="warehouseEmail">
+                                <div class="invalid-feedback" id="emailError"></div>
+                            </div>
+                            
+                            <!-- Dimensions -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="labelDimensions">الأبعاد (م²)</label>
+                                <input type="number" class="form-control form-control-custom" id="warehouseDimensions" min="1">
+                                <div class="invalid-feedback" id="dimensionsError"></div>
+                            </div>
+                            
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label class="form-label-custom" id="labelDescription">وصف المخزن</label>
+                                <textarea class="form-control form-control-custom" id="warehouseDescription" rows="2"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Error Summary -->
+                        <div class="alert alert-danger mt-3 d-none" id="formErrors">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong id="formErrorsTitle">يوجد أخطاء في النموذج:</strong>
+                            <ul class="mb-0 mt-2" id="errorList"></ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal" id="btnCancel">
+                            <i class="fas fa-times"></i>
+                            <span id="btnCancelText">إلغاء</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-custom" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            <span id="btnSaveWarehouse">حفظ المخزن</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Warehouse Modal -->
+    <div class="modal fade modal-custom" id="editWarehouseModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title modal-title-custom">
+                        <i class="fas fa-edit me-2"></i>
+                        <span id="modalEditTitle">تعديل مخزن</span>
+                    </h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="editWarehouseForm" onsubmit="event.preventDefault(); updateWarehouse();">
+                    <input type="hidden" id="editWarehouseId">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <!-- Warehouse Name -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelName">اسم المخزن *</label>
+                                <input type="text" class="form-control form-control-custom" id="editWarehouseName" required>
+                                <div class="invalid-feedback" id="editNameError"></div>
+                            </div>
+                            
+                            <!-- Warehouse Code -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelCode">رمز المخزن *</label>
+                                <input type="text" class="form-control form-control-custom" id="editWarehouseCode" required>
+                                <div class="invalid-feedback" id="editCodeError"></div>
+                            </div>
+                            
+                            <!-- Location -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelLocation">الموقع *</label>
+                                <input type="text" class="form-control form-control-custom" id="editWarehouseLocation" required>
+                                <div class="invalid-feedback" id="editLocationError"></div>
+                            </div>
+                            
+                            <!-- Manager -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelManager">المدير المسؤول *</label>
+                                <input type="text" class="form-control form-control-custom" id="editWarehouseManager" required>
+                                <div class="invalid-feedback" id="editManagerError"></div>
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelPhone">رقم الهاتف *</label>
+                                <input type="tel" class="form-control form-control-custom" id="editWarehousePhone" required>
+                                <div class="invalid-feedback" id="editPhoneError"></div>
+                            </div>
+                            
+                            <!-- Capacity -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelCapacity">السعة التخزينية *</label>
+                                <input type="number" class="form-control form-control-custom" id="editWarehouseCapacity" min="1" required>
+                                <div class="invalid-feedback" id="editCapacityError"></div>
+                            </div>
+                            
+                            <!-- Current Stock -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelCurrentStock">المخزون الحالي</label>
+                                <input type="number" class="form-control form-control-custom" id="editCurrentStock" min="0" readonly>
+                            </div>
+                            
+                            <!-- Status -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelStatus">الحالة *</label>
+                                <select class="form-select form-select-custom" id="editWarehouseStatus" required>
+                                    <option value="" id="editOptionSelectStatus">اختر الحالة</option>
+                                    <option value="نشط" id="editOptionActive">نشط</option>
+                                    <option value="غير نشط" id="editOptionInactive">غير نشط</option>
+                                </select>
+                                <div class="invalid-feedback" id="editStatusError"></div>
+                            </div>
+                            
+                            <!-- Type -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelType">نوع المخزن *</label>
+                                <select class="form-select form-select-custom" id="editWarehouseType" required>
+                                    <option value="" id="editOptionSelectType">اختر النوع</option>
+                                    <option value="رئيسي" id="editOptionMain">رئيسي</option>
+                                    <option value="فرعي" id="editOptionSubsidiary">فرعي</option>
+                                    <option value="توزيع" id="editOptionDistribution">توزيع</option>
+                                    <option value="بيع بالتجزئة" id="editOptionRetail">بيع بالتجزئة</option>
+                                </select>
+                                <div class="invalid-feedback" id="editTypeError"></div>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom" id="editLabelEmail">البريد الإلكتروني</label>
+                                <input type="email" class="form-control form-control-custom" id="editWarehouseEmail">
+                                <div class="invalid-feedback" id="editEmailError"></div>
+                            </div>
+                            
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label class="form-label-custom" id="editLabelDescription">وصف المخزن</label>
+                                <textarea class="form-control form-control-custom" id="editWarehouseDescription" rows="2"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Error Summary -->
+                        <div class="alert alert-danger mt-3 d-none" id="editFormErrors">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong id="editFormErrorsTitle">يوجد أخطاء في النموذج:</strong>
+                            <ul class="mb-0 mt-2" id="editErrorList"></ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal" id="editBtnCancel">
+                            <i class="fas fa-times"></i>
+                            <span id="editBtnCancelText">إلغاء</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-custom" id="editSubmitBtn">
+                            <i class="fas fa-save"></i>
+                            <span id="editBtnSave">حفظ التعديلات</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Language Translations -->
+    <script>
+        // Translations dictionary
+        const translations = {
+            ar: {
+                pageTitle: "إدارة المخازن - نظام إدارة المخازن",
+                systemName: "نظام المخازن",
+                systemIntegration: "الإدارة المتكاملة",
+                userRole: "مدير النظام",
+                navDashboard: "لوحة التحكم",
+                navInventory: "إدارة المخزون",
+                navOperations: "العمليات اليومية",
+                navReports: "التقارير والتحليل",
+                navWarehouses: "إدارة المخازن",
+                navUsers: "المستخدمون",
+                navSettings: "الإعدادات",
+                navLogout: "تسجيل الخروج",
+                mainTitle: "إدارة المخازن",
+                statsTotalLabel: "إجمالي المخازن",
+                statsActiveLabel: "نشطة",
+                btnAddWarehouse: "إضافة مخزن جديد",
+                statsTotalText: "إجمالي المخازن",
+                statsActiveText: "مخازن نشطة",
+                statsCapacityText: "متوسط الامتلاء",
+                statsProductsText: "منتجات في المخازن",
+                warehouseListTitle: "قائمة المخازن",
+                btnExportExcel: "تصدير Excel",
+                btnRefresh: "تحديث",
+                filterAll: "جميع الحالات",
+                filterActive: "نشط",
+                filterInactive: "غير نشط",
+                btnFilter: "تصفية",
+                loadingText: "جاري تحميل المخازن...",
+                noWarehousesText: "لا توجد مخازن مسجلة",
+                btnAddWarehouse2: "إضافة مخزن جديد",
+                labelLocation: "الموقع",
+                labelManager: "المدير",
+                labelPhone: "الهاتف",
+                labelCapacity: "السعة",
+                labelCurrentStock: "المخزون الحالي",
+                labelFillRate: "معدل الامتلاء",
+                btnEdit: "تعديل",
+                btnDelete: "حذف",
+                modalAddTitle: "إضافة مخزن جديد",
+                modalEditTitle: "تعديل مخزن",
+                labelName: "اسم المخزن *",
+                labelCode: "رمز المخزن *",
+                labelManager: "المدير المسؤول *",
+                labelPhone: "رقم الهاتف *",
+                labelCapacity: "السعة التخزينية *",
+                labelStatus: "الحالة *",
+                optionSelectStatus: "اختر الحالة",
+                optionActive: "نشط",
+                optionInactive: "غير نشط",
+                labelType: "نوع المخزن *",
+                optionSelectType: "اختر النوع",
+                optionMain: "رئيسي",
+                optionSubsidiary: "فرعي",
+                optionDistribution: "توزيع",
+                optionRetail: "بيع بالتجزئة",
+                labelEmail: "البريد الإلكتروني",
+                labelDimensions: "الأبعاد (م²)",
+                labelDescription: "وصف المخزن",
+                formErrorsTitle: "يوجد أخطاء في النموذج:",
+                btnCancel: "إلغاء",
+                btnCancelText: "إلغاء",
+                btnSaveWarehouse: "حفظ المخزن",
+                editLabelName: "اسم المخزن *",
+                editLabelCode: "رمز المخزن *",
+                editLabelLocation: "الموقع *",
+                editLabelManager: "المدير المسؤول *",
+                editLabelPhone: "رقم الهاتف *",
+                editLabelCapacity: "السعة التخزينية *",
+                editLabelCurrentStock: "المخزون الحالي",
+                editLabelStatus: "الحالة *",
+                editOptionSelectStatus: "اختر الحالة",
+                editOptionActive: "نشط",
+                editOptionInactive: "غير نشط",
+                editLabelType: "نوع المخزن *",
+                editOptionSelectType: "اختر النوع",
+                editOptionMain: "رئيسي",
+                editOptionSubsidiary: "فرعي",
+                editOptionDistribution: "توزيع",
+                editOptionRetail: "بيع بالتجزئة",
+                editLabelEmail: "البريد الإلكتروني",
+                editLabelDescription: "وصف المخزن",
+                editFormErrorsTitle: "يوجد أخطاء في النموذج:",
+                editBtnCancel: "إلغاء",
+                editBtnCancelText: "إلغاء",
+                editBtnSave: "حفظ التعديلات"
+            },
+            fr: {
+                pageTitle: "Gestion des Entrepôts - Système de Gestion d'Entrepôts",
+                systemName: "Système d'Entrepôt",
+                systemIntegration: "Gestion Intégrée",
+                userRole: "Administrateur Système",
+                navDashboard: "Tableau de Bord",
+                navInventory: "Gestion des Stocks",
+                navOperations: "Opérations Quotidiennes",
+                navReports: "Rapports et Analyse",
+                navWarehouses: "Gestion des Entrepôts",
+                navUsers: "Utilisateurs",
+                navSettings: "Paramètres",
+                navLogout: "Déconnexion",
+                mainTitle: "Gestion des Entrepôts",
+                statsTotalLabel: "Total Entrepôts",
+                statsActiveLabel: "Actifs",
+                btnAddWarehouse: "Ajouter un Entrepôt",
+                statsTotalText: "Total Entrepôts",
+                statsActiveText: "Entrepôts Actifs",
+                statsCapacityText: "Taux de Remplissage Moyen",
+                statsProductsText: "Produits dans les Entrepôts",
+                warehouseListTitle: "Liste des Entrepôts",
+                btnExportExcel: "Exporter Excel",
+                btnRefresh: "Rafraîchir",
+                filterAll: "Tous Statuts",
+                filterActive: "Actif",
+                filterInactive: "Inactif",
+                btnFilter: "Filtrer",
+                loadingText: "Chargement des entrepôts...",
+                noWarehousesText: "Aucun entrepôt enregistré",
+                btnAddWarehouse2: "Ajouter un Entrepôt",
+                labelLocation: "Emplacement",
+                labelManager: "Responsable",
+                labelPhone: "Téléphone",
+                labelCapacity: "Capacité",
+                labelCurrentStock: "Stock Actuel",
+                labelFillRate: "Taux de Remplissage",
+                btnEdit: "Modifier",
+                btnDelete: "Supprimer",
+                modalAddTitle: "Ajouter un nouvel entrepôt",
+                modalEditTitle: "Modifier l'entrepôt",
+                labelName: "Nom de l'entrepôt *",
+                labelCode: "Code de l'entrepôt *",
+                labelLocation: "Emplacement *",
+                labelManager: "Responsable *",
+                labelPhone: "Numéro de téléphone *",
+                labelCapacity: "Capacité de Stockage *",
+                labelStatus: "Statut *",
+                optionSelectStatus: "Sélectionner le statut",
+                optionActive: "Actif",
+                optionInactive: "Inactif",
+                labelType: "Type d'entrepôt *",
+                optionSelectType: "Sélectionner le type",
+                optionMain: "Principal",
+                optionSubsidiary: "Subsidiaire",
+                optionDistribution: "Distribution",
+                optionRetail: "Détail",
+                labelEmail: "E-mail",
+                labelDimensions: "Dimensions (m²)",
+                labelDescription: "Description",
+                formErrorsTitle: "Il y a des erreurs dans le formulaire:",
+                btnCancel: "Annuler",
+                btnCancelText: "Annuler",
+                btnSaveWarehouse: "Enregistrer l'entrepôt",
+                editLabelName: "Nom de l'entrepôt *",
+                editLabelCode: "Code de l'entrepôt *",
+                editLabelLocation: "Emplacement *",
+                editLabelManager: "Responsable *",
+                editLabelPhone: "Numéro de téléphone *",
+                editLabelCapacity: "Capacité de Stockage *",
+                editLabelCurrentStock: "Stock Actuel",
+                editLabelStatus: "Statut *",
+                editOptionSelectStatus: "Sélectionner le statut",
+                editOptionActive: "Actif",
+                editOptionInactive: "Inactif",
+                editLabelType: "Type d'entrepôt *",
+                editOptionSelectType: "Sélectionner le type",
+                editOptionMain: "Principal",
+                editOptionSubsidiary: "Subsidiaire",
+                editOptionDistribution: "Distribution",
+                editOptionRetail: "Détail",
+                editLabelEmail: "E-mail",
+                editLabelDescription: "Description",
+                editFormErrorsTitle: "Il y a des erreurs dans le formulaire:",
+                editBtnCancel: "Annuler",
+                editBtnCancelText: "Annuler",
+                editBtnSave: "Enregistrer les modifications"
+            },
+            en: {
+                pageTitle: "Warehouse Management - Warehouse Management System",
+                systemName: "Warehouse System",
+                systemIntegration: "Integrated Management",
+                userRole: "System Administrator",
+                navDashboard: "Dashboard",
+                navInventory: "Inventory Management",
+                navOperations: "Daily Operations",
+                navReports: "Reports & Analysis",
+                navWarehouses: "Warehouse Management",
+                navUsers: "Users",
+                navSettings: "Settings",
+                navLogout: "Logout",
+                mainTitle: "Warehouse Management",
+                statsTotalLabel: "Total Warehouses",
+                statsActiveLabel: "Active",
+                btnAddWarehouse: "Add Warehouse",
+                statsTotalText: "Total Warehouses",
+                statsActiveText: "Active Warehouses",
+                statsCapacityText: "Average Fill Rate",
+                statsProductsText: "Products in Warehouses",
+                warehouseListTitle: "Warehouse List",
+                btnExportExcel: "Export Excel",
+                btnRefresh: "Refresh",
+                filterAll: "All Statuses",
+                filterActive: "Active",
+                filterInactive: "Inactive",
+                btnFilter: "Filter",
+                loadingText: "Loading warehouses...",
+                noWarehousesText: "No warehouses registered",
+                btnAddWarehouse2: "Add Warehouse",
+                labelLocation: "Location",
+                labelManager: "Manager",
+                labelPhone: "Phone",
+                labelCapacity: "Capacity",
+                labelCurrentStock: "Current Stock",
+                labelFillRate: "Fill Rate",
+                btnEdit: "Edit",
+                btnDelete: "Delete",
+                modalAddTitle: "Add New Warehouse",
+                modalEditTitle: "Edit Warehouse",
+                labelName: "Warehouse Name *",
+                labelCode: "Warehouse Code *",
+                labelLocation: "Location *",
+                labelManager: "Responsible Manager *",
+                labelPhone: "Phone Number *",
+                labelCapacity: "Storage Capacity *",
+                labelStatus: "Status *",
+                optionSelectStatus: "Select Status",
+                optionActive: "Active",
+                optionInactive: "Inactive",
+                labelType: "Warehouse Type *",
+                optionSelectType: "Select Type",
+                optionMain: "Main",
+                optionSubsidiary: "Subsidiary",
+                optionDistribution: "Distribution",
+                optionRetail: "Retail",
+                labelEmail: "Email",
+                labelDimensions: "Dimensions (m²)",
+                labelDescription: "Description",
+                formErrorsTitle: "There are errors in the form:",
+                btnCancel: "Cancel",
+                btnCancelText: "Cancel",
+                btnSaveWarehouse: "Save Warehouse",
+                editLabelName: "Warehouse Name *",
+                editLabelCode: "Warehouse Code *",
+                editLabelLocation: "Location *",
+                editLabelManager: "Responsible Manager *",
+                editLabelPhone: "Phone Number *",
+                editLabelCapacity: "Storage Capacity *",
+                editLabelCurrentStock: "Current Stock",
+                editLabelStatus: "Status *",
+                editOptionSelectStatus: "Select Status",
+                editOptionActive: "Active",
+                editOptionInactive: "Inactive",
+                editLabelType: "Warehouse Type *",
+                editOptionSelectType: "Select Type",
+                editOptionMain: "Main",
+                editOptionSubsidiary: "Subsidiary",
+                editOptionDistribution: "Distribution",
+                editOptionRetail: "Retail",
+                editLabelEmail: "Email",
+                editLabelDescription: "Description",
+                editFormErrorsTitle: "There are errors in the form:",
+                editBtnCancel: "Cancel",
+                editBtnCancelText: "Cancel",
+                editBtnSave: "Save Changes"
+            },
+            ru: {
+                pageTitle: "Управление Складами - Система Управления Складами",
+                systemName: "Складская Система",
+                systemIntegration: "Интегрированное Управление",
+                userRole: "Администратор Системы",
+                navDashboard: "Панель Управления",
+                navInventory: "Управление Запасами",
+                navOperations: "Ежедневные Операции",
+                navReports: "Отчеты и Анализ",
+                navWarehouses: "Управление Складами",
+                navUsers: "Пользователи",
+                navSettings: "Настройки",
+                navLogout: "Выйти",
+                mainTitle: "Управление Складами",
+                statsTotalLabel: "Всего Складов",
+                statsActiveLabel: "Активных",
+                btnAddWarehouse: "Добавить Склад",
+                statsTotalText: "Всего Складов",
+                statsActiveText: "Активных Складов",
+                statsCapacityText: "Средняя Заполненность",
+                statsProductsText: "Товары на Складах",
+                warehouseListTitle: "Список Складов",
+                btnExportExcel: "Экспорт Excel",
+                btnRefresh: "Обновить",
+                filterAll: "Все Статусы",
+                filterActive: "Активный",
+                filterInactive: "Неактивный",
+                btnFilter: "Фильтр",
+                loadingText: "Загрузка складов...",
+                noWarehousesText: "Нет зарегистрированных складов",
+                btnAddWarehouse2: "Добавить Склад",
+                labelLocation: "Местоположение",
+                labelManager: "Менеджер",
+                labelPhone: "Телефон",
+                labelCapacity: "Емкость",
+                labelCurrentStock: "Текущий Запас",
+                labelFillRate: "Уровень Заполнения",
+                btnEdit: "Редактировать",
+                btnDelete: "Удалить",
+                modalAddTitle: "Добавить Новый Склад",
+                modalEditTitle: "Редактировать Склад",
+                labelName: "Название Склада *",
+                labelCode: "Код Склада *",
+                labelLocation: "Местоположение *",
+                labelManager: "Ответственный Менеджер *",
+                labelPhone: "Номер Телефона *",
+                labelCapacity: "Емкость Хранения *",
+                labelStatus: "Статус *",
+                optionSelectStatus: "Выбрать Статус",
+                optionActive: "Активный",
+                optionInactive: "Неактивный",
+                labelType: "Тип Склада *",
+                optionSelectType: "Выбрать Тип",
+                optionMain: "Главный",
+                optionSubsidiary: "Вспомогательный",
+                optionDistribution: "Распределительный",
+                optionRetail: "Розничный",
+                labelEmail: "Эл. Почта",
+                labelDimensions: "Размеры (м²)",
+                labelDescription: "Описание",
+                formErrorsTitle: "Есть ошибки в форме:",
+                btnCancel: "Отмена",
+                btnCancelText: "Отмена",
+                btnSaveWarehouse: "Сохранить Склад",
+                editLabelName: "Название Склада *",
+                editLabelCode: "Код Склада *",
+                editLabelLocation: "Местоположение *",
+                editLabelManager: "Ответственный Менеджер *",
+                editLabelPhone: "Номер Телефона *",
+                editLabelCapacity: "Емкость Хранения *",
+                editLabelCurrentStock: "Текущий Запас",
+                editLabelStatus: "Статус *",
+                editOptionSelectStatus: "Выбрать Статус",
+                editOptionActive: "Активный",
+                editOptionInactive: "Неактивный",
+                editLabelType: "Тип Склада *",
+                editOptionSelectType: "Выбрать Тип",
+                editOptionMain: "Главный",
+                editOptionSubsidiary: "Вспомогательный",
+                editOptionDistribution: "Распределительный",
+                editOptionRetail: "Розничный",
+                editLabelEmail: "Эл. Почта",
+                editLabelDescription: "Описание",
+                editFormErrorsTitle: "Есть ошибки в форме:",
+                editBtnCancel: "Отмена",
+                editBtnCancelText: "Отмена",
+                editBtnSave: "Сохранить Изменения"
+            }
+        };
+
+        // Current language
+        let currentLang = 'ar';
+
+        // Function to change language
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update page direction
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+                document.body.classList.remove('ltr');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = lang;
+                document.body.classList.add('ltr');
+            }
+            
+            // Apply translations
+            applyTranslations(lang);
+            
+            // Save preference
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        // Function to apply translations (VERSION CORRIGÉE AVEC VÉRIFICATIONS)
+        function applyTranslations(lang) {
+            const langData = translations[lang];
+            if (!langData) return;
+            
+            try {
+                // Page title
+                if (document.title !== undefined) {
+                    document.title = langData.pageTitle;
+                }
+                
+                // Appliquer les traductions avec vérifications d'existence
+                const updateElementText = (id, value) => {
+                    const element = document.getElementById(id);
+                    if (element && value) {
+                        element.textContent = value;
+                    }
+                };
+                
+                // Sidebar
+                updateElementText('systemName', langData.systemName);
+                updateElementText('systemIntegration', langData.systemIntegration);
+                updateElementText('userRole', langData.userRole);
+                updateElementText('navDashboard', langData.navDashboard);
+                updateElementText('navInventory', langData.navInventory);
+                updateElementText('navOperations', langData.navOperations);
+                updateElementText('navReports', langData.navReports);
+                updateElementText('navWarehouses', langData.navWarehouses);
+                updateElementText('navUsers', langData.navUsers);
+                updateElementText('navSettings', langData.navSettings);
+                updateElementText('navLogout', langData.navLogout);
+                
+                // Header
+                updateElementText('mainTitle', langData.mainTitle);
+                updateElementText('statsTotalLabel', langData.statsTotalLabel);
+                updateElementText('statsActiveLabel', langData.statsActiveLabel);
+                updateElementText('btnAddWarehouse', langData.btnAddWarehouse);
+                
+                // Statistics
+                updateElementText('statsTotalText', langData.statsTotalText);
+                updateElementText('statsActiveText', langData.statsActiveText);
+                updateElementText('statsCapacityText', langData.statsCapacityText);
+                updateElementText('statsProductsText', langData.statsProductsText);
+                
+                // Warehouse Grid
+                updateElementText('warehouseListTitle', langData.warehouseListTitle);
+                updateElementText('btnExportExcel', langData.btnExportExcel);
+                updateElementText('btnRefresh', langData.btnRefresh);
+                
+                const searchInput = document.getElementById('searchWarehouse');
+                if (searchInput && langData.searchPlaceholder) {
+                    searchInput.placeholder = langData.searchPlaceholder;
+                }
+                
+                updateElementText('filterAll', langData.filterAll);
+                updateElementText('filterActive', langData.filterActive);
+                updateElementText('filterInactive', langData.filterInactive);
+                updateElementText('btnFilter', langData.btnFilter);
+                updateElementText('loadingText', langData.loadingText);
+                updateElementText('noWarehousesText', langData.noWarehousesText);
+                updateElementText('btnAddWarehouse2', langData.btnAddWarehouse2);
+                
+                // Modal Add
+                updateElementText('modalAddTitle', langData.modalAddTitle);
+                updateElementText('labelName', langData.labelName);
+                updateElementText('labelCode', langData.labelCode);
+                updateElementText('labelLocation', langData.labelLocation);
+                updateElementText('labelManager', langData.labelManager);
+                updateElementText('labelPhone', langData.labelPhone);
+                updateElementText('labelCapacity', langData.labelCapacity);
+                updateElementText('labelStatus', langData.labelStatus);
+                updateElementText('optionSelectStatus', langData.optionSelectStatus);
+                updateElementText('optionActive', langData.optionActive);
+                updateElementText('optionInactive', langData.optionInactive);
+                updateElementText('labelType', langData.labelType);
+                updateElementText('optionSelectType', langData.optionSelectType);
+                updateElementText('optionMain', langData.optionMain);
+                updateElementText('optionSubsidiary', langData.optionSubsidiary);
+                updateElementText('optionDistribution', langData.optionDistribution);
+                updateElementText('optionRetail', langData.optionRetail);
+                updateElementText('labelEmail', langData.labelEmail);
+                updateElementText('labelDimensions', langData.labelDimensions);
+                updateElementText('labelDescription', langData.labelDescription);
+                updateElementText('formErrorsTitle', langData.formErrorsTitle);
+                updateElementText('btnCancel', langData.btnCancel);
+                updateElementText('btnCancelText', langData.btnCancelText);
+                updateElementText('btnSaveWarehouse', langData.btnSaveWarehouse);
+                
+                // Modal Edit
+                updateElementText('modalEditTitle', langData.modalEditTitle);
+                updateElementText('editLabelName', langData.editLabelName);
+                updateElementText('editLabelCode', langData.editLabelCode);
+                updateElementText('editLabelLocation', langData.editLabelLocation);
+                updateElementText('editLabelManager', langData.editLabelManager);
+                updateElementText('editLabelPhone', langData.editLabelPhone);
+                updateElementText('editLabelCapacity', langData.editLabelCapacity);
+                updateElementText('editLabelCurrentStock', langData.editLabelCurrentStock);
+                updateElementText('editLabelStatus', langData.editLabelStatus);
+                updateElementText('editOptionSelectStatus', langData.editOptionSelectStatus);
+                updateElementText('editOptionActive', langData.editOptionActive);
+                updateElementText('editOptionInactive', langData.editOptionInactive);
+                updateElementText('editLabelType', langData.editLabelType);
+                updateElementText('editOptionSelectType', langData.editOptionSelectType);
+                updateElementText('editOptionMain', langData.editOptionMain);
+                updateElementText('editOptionSubsidiary', langData.editOptionSubsidiary);
+                updateElementText('editOptionDistribution', langData.editOptionDistribution);
+                updateElementText('editOptionRetail', langData.editOptionRetail);
+                updateElementText('editLabelEmail', langData.editLabelEmail);
+                updateElementText('editLabelDescription', langData.editLabelDescription);
+                updateElementText('editFormErrorsTitle', langData.editFormErrorsTitle);
+                updateElementText('editBtnCancel', langData.editBtnCancel);
+                updateElementText('editBtnCancelText', langData.editBtnCancelText);
+                updateElementText('editBtnSave', langData.editBtnSave);
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'application des traductions:', error);
+            }
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize language switcher
+            const savedLang = localStorage.getItem('preferredLang') || 'ar';
+            changeLanguage(savedLang);
+            
+            // Add event listeners to language buttons
+            document.querySelectorAll('.lang-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    if (lang) {
+                        changeLanguage(lang);
+                    }
+                });
+            });
+            
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Load data
+            await loadWarehouses();
+        });
+        
+        // Rest of your JavaScript code...
+        
+        // WMS Global Object
+        const WMS = {
+            toggleSidebar: function() {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.querySelector('.main-content');
+                if (sidebar) sidebar.classList.toggle('hidden');
+                if (mainContent) mainContent.classList.toggle('full-width');
+            },
+            
+            showAlert: function(message, type = 'info', duration = 5000) {
+                const alertContainer = document.getElementById('alertContainer');
+                if (!alertContainer) return;
+                
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-custom fade-in`;
+                alert.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'} me-2"></i>
+                        <div class="flex-grow-1">${message}</div>
+                        <button class="btn btn-link text-${type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'warning' ? 'warning' : 'info'} p-0" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                alertContainer.appendChild(alert);
+                
+                // Auto remove after duration
+                if (duration > 0) {
+                    setTimeout(() => {
+                        if (alert.parentElement) {
+                            alert.remove();
+                        }
+                    }, duration);
+                }
+            },
+            
+            formatNumber: function(num) {
+                try {
+                    return new Intl.NumberFormat('ar-EG').format(num);
+                } catch (e) {
+                    return num.toString();
+                }
+            },
+            
+            fetchData: async function(endpoint) {
+                console.log(`Fetching data from: ${endpoint}`);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                if (endpoint.includes('warehouses')) {
+                    const mockWarehouses = [
+                        {
+                            id: 'W001',
+                            name: 'المخزن الرئيسي',
+                            code: 'WH-001',
+                            location: 'القاهرة - المعادي',
+                            manager: 'أحمد محمود',
+                            phone: '+201012345678',
+                            capacity: 10000,
+                            current_stock: 7500,
+                            status: 'نشط',
+                            type: 'رئيسي',
+                            email: 'main@company.com',
+                            dimensions: 500,
+                            description: 'المخزن الرئيسي للشركة'
+                        },
+                        {
+                            id: 'W002',
+                            name: 'مخزن التوزيع',
+                            code: 'WH-002',
+                            location: 'الجيزة - الدقي',
+                            manager: 'محمد السيد',
+                            phone: '+201098765432',
+                            capacity: 8000,
+                            current_stock: 3500,
+                            status: 'نشط',
+                            type: 'توزيع',
+                            email: 'distribution@company.com',
+                            dimensions: 400,
+                            description: 'مخزن التوزيع لمنطقة الجيزة'
+                        }
+                    ];
+                    
+                    return { success: true, data: mockWarehouses };
+                }
+                
+                return { success: true, data: [] };
+            },
+            
+            postData: async function(endpoint, data) {
+                console.log(`Posting data to: ${endpoint}`, data);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return { success: true, message: 'تمت العملية بنجاح', data: { ...data, id: 'W' + Date.now().toString().slice(-6) } };
+            },
+            
+            putData: async function(endpoint, id, data) {
+                console.log(`Updating data at: ${endpoint}, ID: ${id}`, data);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return { success: true, message: 'تم التحديث بنجاح', data: { ...data, id: id } };
+            },
+            
+            deleteData: async function(endpoint, id) {
+                console.log(`Deleting data from: ${endpoint}, ID: ${id}`);
+                await new Promise(resolve => setTimeout(resolve, 800));
+                return { success: true, message: 'تم الحذف بنجاح' };
+            }
+        };
+        
+        // Global variables
+        let warehouses = [];
+        
+        // Load warehouses
+        async function loadWarehouses() {
+            try {
+                const warehousesData = await WMS.fetchData('warehouses?limit=100');
+                
+                if (warehousesData && warehousesData.data) {
+                    warehouses = warehousesData.data;
+                    displayWarehouses();
+                    updateStats();
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في تحميل البيانات:', error);
+                WMS.showAlert('حدث خطأ في تحميل البيانات', 'danger');
+            }
+        }
+        
+        // Display warehouses in grid
+        function displayWarehouses() {
+            const container = document.getElementById('warehousesContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (warehouses.length === 0) {
+                container.classList.add('d-none');
+                emptyState.classList.remove('d-none');
+                return;
+            }
+            
+            container.classList.remove('d-none');
+            emptyState.classList.add('d-none');
+            
+            const langData = translations[currentLang];
+            
+            container.innerHTML = warehouses.map(warehouse => {
+                const usage = warehouse.capacity > 0 ? Math.round((warehouse.current_stock / warehouse.capacity) * 100) : 0;
+                const capacityClass = usage > 90 ? 'capacity-full' : usage > 70 ? 'capacity-low' : '';
+                const statusClass = warehouse.status === 'نشط' ? 'status-active' : 'status-inactive';
+                const cardClass = warehouse.status === 'نشط' ? 'active' : 'inactive';
+                
+                return `
+                    <div class="warehouse-card ${cardClass} fade-in">
+                        <div class="warehouse-header">
+                            <div class="warehouse-icon">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
+                            <span class="warehouse-status ${statusClass}">${warehouse.status}</span>
+                        </div>
+                        
+                        <h3 class="warehouse-title">${warehouse.name}</h3>
+                        <div class="warehouse-code">
+                            <i class="fas fa-code me-1"></i> ${warehouse.code}
+                        </div>
+                        
+                        <div class="warehouse-details">
+                            <div class="detail-item">
+                                <span class="detail-label">${langData.labelLocation}</span>
+                                <span class="detail-value">
+                                    <i class="fas fa-map-marker-alt me-1"></i> ${warehouse.location}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">${langData.labelManager}</span>
+                                <span class="detail-value">
+                                    <i class="fas fa-user me-1"></i> ${warehouse.manager}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">${langData.labelPhone}</span>
+                                <span class="detail-value">
+                                    <i class="fas fa-phone me-1"></i> ${warehouse.phone}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">${langData.labelCapacity}</span>
+                                <span class="detail-value">${WMS.formatNumber(warehouse.capacity)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">${langData.labelCurrentStock}</span>
+                                <span class="detail-value">${WMS.formatNumber(warehouse.current_stock)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">${langData.labelFillRate}</span>
+                                <span class="detail-value">${usage}%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="capacity-bar ${capacityClass}">
+                            <div class="capacity-fill" style="width: ${Math.min(usage, 100)}%"></div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button onclick="editWarehouse('${warehouse.id}')" class="btn-action btn-edit" data-bs-toggle="tooltip" title="${langData.btnEdit}">
+                                <i class="fas fa-edit"></i>
+                                <span>${langData.btnEdit}</span>
+                            </button>
+                            <button onclick="deleteWarehouse('${warehouse.id}')" class="btn-action btn-delete" data-bs-toggle="tooltip" title="${langData.btnDelete}">
+                                <i class="fas fa-trash"></i>
+                                <span>${langData.btnDelete}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const total = warehouses.length;
+            const active = warehouses.filter(w => w.status === 'نشط').length;
+            const totalCapacity = warehouses.reduce((sum, w) => sum + w.capacity, 0);
+            const totalStock = warehouses.reduce((sum, w) => sum + w.current_stock, 0);
+            const avgUsage = totalCapacity > 0 ? Math.round((totalStock / totalCapacity) * 100) : 0;
+            const totalProducts = warehouses.reduce((sum, w) => sum + w.current_stock, 0);
+            
+            document.getElementById('totalWarehouses').textContent = WMS.formatNumber(total);
+            document.getElementById('activeWarehouses').textContent = WMS.formatNumber(active);
+            document.getElementById('statsTotal').textContent = WMS.formatNumber(total);
+            document.getElementById('statsActive').textContent = WMS.formatNumber(active);
+            document.getElementById('statsCapacity').textContent = avgUsage + '%';
+            document.getElementById('statsProducts').textContent = WMS.formatNumber(totalProducts);
+        }
+        
+        // Open add warehouse modal
+        function openAddWarehouseModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addWarehouseModal'));
+            modal.show();
+        }
+        
+        // Add new warehouse
+        async function addWarehouse() {
+            const form = document.getElementById('addWarehouseForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Reset errors
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.getElementById('formErrors').classList.add('d-none');
+            
+            // Validate form
+            const name = document.getElementById('warehouseName').value.trim();
+            const code = document.getElementById('warehouseCode').value.trim();
+            const location = document.getElementById('warehouseLocation').value.trim();
+            const manager = document.getElementById('warehouseManager').value.trim();
+            const phone = document.getElementById('warehousePhone').value.trim();
+            const capacity = document.getElementById('warehouseCapacity').value;
+            const status = document.getElementById('warehouseStatus').value;
+            const type = document.getElementById('warehouseType').value;
+            
+            const errors = [];
+            
+            if (!name) errors.push('اسم المخزن مطلوب');
+            if (!code) errors.push('رمز المخزن مطلوب');
+            if (!location) errors.push('الموقع مطلوب');
+            if (!manager) errors.push('المدير المسؤول مطلوب');
+            if (!phone) errors.push('رقم الهاتف مطلوب');
+            if (!capacity || capacity < 1) errors.push('السعة التخزينية يجب أن تكون رقم موجب');
+            if (!status) errors.push('الحالة مطلوبة');
+            if (!type) errors.push('نوع المخزن مطلوب');
+            
+            if (errors.length > 0) {
+                document.getElementById('errorList').innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+                document.getElementById('formErrors').classList.remove('d-none');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الحفظ...';
+                
+                const newWarehouse = {
+                    name,
+                    code,
+                    location,
+                    manager,
+                    phone,
+                    capacity: parseInt(capacity),
+                    current_stock: 0,
+                    status,
+                    type,
+                    email: document.getElementById('warehouseEmail').value.trim(),
+                    dimensions: document.getElementById('warehouseDimensions').value || null,
+                    description: document.getElementById('warehouseDescription').value.trim()
+                };
+                
+                const result = await WMS.postData('warehouses', newWarehouse);
+                
+                if (result && result.success) {
+                    WMS.showAlert('تم إضافة المخزن بنجاح', 'success');
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addWarehouseModal'));
+                    if (modal) modal.hide();
+                    
+                    form.reset();
+                    warehouses.push(result.data);
+                    displayWarehouses();
+                    updateStats();
+                } else {
+                    throw new Error(result?.message || 'فشل في إضافة المخزن');
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في إضافة المخزن:', error);
+                WMS.showAlert(error.message || 'حدث خطأ أثناء إضافة المخزن', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                const langData = translations[currentLang];
+                submitBtn.innerHTML = `<i class="fas fa-save"></i> ${langData?.btnSaveWarehouse || 'حفظ المخزن'}`;
+            }
+        }
+        
+        // Edit warehouse
+        function editWarehouse(id) {
+            const warehouse = warehouses.find(w => w.id === id);
+            if (!warehouse) {
+                WMS.showAlert('لم يتم العثور على المخزن', 'warning');
+                return;
+            }
+            
+            document.getElementById('editWarehouseId').value = warehouse.id;
+            document.getElementById('editWarehouseName').value = warehouse.name;
+            document.getElementById('editWarehouseCode').value = warehouse.code;
+            document.getElementById('editWarehouseLocation').value = warehouse.location;
+            document.getElementById('editWarehouseManager').value = warehouse.manager;
+            document.getElementById('editWarehousePhone').value = warehouse.phone;
+            document.getElementById('editWarehouseCapacity').value = warehouse.capacity;
+            document.getElementById('editCurrentStock').value = warehouse.current_stock;
+            document.getElementById('editWarehouseStatus').value = warehouse.status;
+            document.getElementById('editWarehouseType').value = warehouse.type;
+            document.getElementById('editWarehouseEmail').value = warehouse.email || '';
+            document.getElementById('editWarehouseDescription').value = warehouse.description || '';
+            
+            document.getElementById('editWarehouseForm').querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.getElementById('editFormErrors').classList.add('d-none');
+            
+            const modal = new bootstrap.Modal(document.getElementById('editWarehouseModal'));
+            modal.show();
+        }
+        
+        // Update warehouse
+        async function updateWarehouse() {
+            const form = document.getElementById('editWarehouseForm');
+            const submitBtn = document.getElementById('editSubmitBtn');
+            const id = document.getElementById('editWarehouseId').value;
+            
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.getElementById('editFormErrors').classList.add('d-none');
+            
+            const name = document.getElementById('editWarehouseName').value.trim();
+            const code = document.getElementById('editWarehouseCode').value.trim();
+            const location = document.getElementById('editWarehouseLocation').value.trim();
+            const manager = document.getElementById('editWarehouseManager').value.trim();
+            const phone = document.getElementById('editWarehousePhone').value.trim();
+            const capacity = document.getElementById('editWarehouseCapacity').value;
+            const status = document.getElementById('editWarehouseStatus').value;
+            const type = document.getElementById('editWarehouseType').value;
+            
+            const errors = [];
+            
+            if (!name) errors.push('اسم المخزن مطلوب');
+            if (!code) errors.push('رمز المخزن مطلوب');
+            if (!location) errors.push('الموقع مطلوب');
+            if (!manager) errors.push('المدير المسؤول مطلوب');
+            if (!phone) errors.push('رقم الهاتف مطلوب');
+            if (!capacity || capacity < 1) errors.push('السعة التخزينية يجب أن تكون رقم موجب');
+            if (!status) errors.push('الحالة مطلوبة');
+            if (!type) errors.push('نوع المخزن مطلوب');
+            
+            if (errors.length > 0) {
+                document.getElementById('editErrorList').innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+                document.getElementById('editFormErrors').classList.remove('d-none');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الحفظ...';
+                
+                const updatedWarehouse = {
+                    name,
+                    code,
+                    location,
+                    manager,
+                    phone,
+                    capacity: parseInt(capacity),
+                    status,
+                    type,
+                    email: document.getElementById('editWarehouseEmail').value.trim(),
+                    description: document.getElementById('editWarehouseDescription').value.trim()
+                };
+                
+                const result = await WMS.putData('warehouses', id, updatedWarehouse);
+                
+                if (result && result.success) {
+                    WMS.showAlert('تم تحديث المخزن بنجاح', 'success');
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editWarehouseModal'));
+                    if (modal) modal.hide();
+                    
+                    const index = warehouses.findIndex(w => w.id === id);
+                    if (index !== -1) {
+                        updatedWarehouse.current_stock = warehouses[index].current_stock;
+                        warehouses[index] = { ...warehouses[index], ...updatedWarehouse };
+                        displayWarehouses();
+                        updateStats();
+                    }
+                } else {
+                    throw new Error(result?.message || 'فشل في تحديث المخزن');
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في تحديث المخزن:', error);
+                WMS.showAlert(error.message || 'حدث خطأ أثناء تحديث المخزن', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                const langData = translations[currentLang];
+                submitBtn.innerHTML = `<i class="fas fa-save"></i> ${langData?.editBtnSave || 'حفظ التعديلات'}`;
+            }
+        }
+        
+        // Delete warehouse
+        async function deleteWarehouse(id) {
+            const warehouse = warehouses.find(w => w.id === id);
+            if (!warehouse) return;
+            
+            if (warehouse.current_stock > 0) {
+                WMS.showAlert('لا يمكن حذف مخزن يحتوي على مخزون', 'warning');
+                return;
+            }
+            
+            if (confirm(`هل أنت متأكد من حذف المخزن "${warehouse.name}"؟`)) {
+                try {
+                    const result = await WMS.deleteData('warehouses', id);
+                    if (result && result.success) {
+                        WMS.showAlert('تم حذف المخزن بنجاح', 'success');
+                        
+                        warehouses = warehouses.filter(w => w.id !== id);
+                        displayWarehouses();
+                        updateStats();
+                    }
+                } catch (error) {
+                    console.error('❌ خطأ في حذف المخزن:', error);
+                    WMS.showAlert('حدث خطأ أثناء حذف المخزن', 'danger');
+                }
+            }
+        }
+        
+        // Export warehouses to Excel
+        function exportWarehouses() {
+            let html = '<table><tr><th>اسم المخزن</th><th>الرمز</th><th>الموقع</th><th>المدير</th><th>الحالة</th><th>السعة</th><th>المخزون</th></tr>';
+            
+            warehouses.forEach(warehouse => {
+                const usage = Math.round((warehouse.current_stock / warehouse.capacity) * 100);
+                html += `<tr>
+                    <td>${warehouse.name}</td>
+                    <td>${warehouse.code}</td>
+                    <td>${warehouse.location}</td>
+                    <td>${warehouse.manager}</td>
+                    <td>${warehouse.status}</td>
+                    <td>${WMS.formatNumber(warehouse.capacity)}</td>
+                    <td>${WMS.formatNumber(warehouse.current_stock)} (${usage}%)</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            
+            let blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+            let url = URL.createObjectURL(blob);
+            
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'المخازن.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            WMS.showAlert('تم تصدير البيانات بنجاح', 'success');
+        }
+        
+        // Refresh warehouses
+        function refreshWarehouses() {
+            loadWarehouses();
+            WMS.showAlert('تم تحديث البيانات', 'info');
+        }
+        
+        // Filter warehouses
+        function filterWarehouses() {
+            const searchTerm = document.getElementById('searchWarehouse')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('statusFilter')?.value || '';
+            
+            const container = document.getElementById('warehousesContainer');
+            const filtered = warehouses.filter(warehouse => {
+                const matchesSearch = !searchTerm || 
+                    warehouse.name.toLowerCase().includes(searchTerm) ||
+                    warehouse.code.toLowerCase().includes(searchTerm) ||
+                    warehouse.location.toLowerCase().includes(searchTerm) ||
+                    warehouse.manager.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || warehouse.status === statusFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5 col-span-3">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <p>لا توجد نتائج مطابقة للبحث</p>
+                    </div>
+                `;
+            } else {
+                const originalWarehouses = warehouses;
+                warehouses = filtered;
+                displayWarehouses();
+                warehouses = originalWarehouses;
+            }
+        }
+        
+        // Export functions to global scope
+        window.openAddWarehouseModal = openAddWarehouseModal;
+        window.editWarehouse = editWarehouse;
+        window.deleteWarehouse = deleteWarehouse;
+        window.exportWarehouses = exportWarehouses;
+        window.refreshWarehouses = refreshWarehouses;
+        window.filterWarehouses = filterWarehouses;
+        window.WMS = WMS;
+        window.changeLanguage = changeLanguage;
+    </script>
+</body>
+</html>

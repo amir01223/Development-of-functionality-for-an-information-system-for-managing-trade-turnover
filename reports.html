@@ -1,0 +1,2684 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="reports_title">التقارير والتحليلات</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #17a2b8;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --sidebar-width: 280px;
+            
+            /* Report Colors */
+            --report-blue: linear-gradient(135deg, #3498db, #2980b9);
+            --report-green: linear-gradient(135deg, #27ae60, #2ecc71);
+            --report-orange: linear-gradient(135deg, #f39c12, #e67e22);
+            --report-purple: linear-gradient(135deg, #9b59b6, #8e44ad);
+            --report-red: linear-gradient(135deg, #e74c3c, #c0392b);
+            --report-teal: linear-gradient(135deg, #1abc9c, #16a085);
+        }
+        
+        /* Language Switcher */
+        .language-switcher-header {
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-left: 15px;
+        }
+        
+        body.ltr .language-switcher-header {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+        
+        .lang-btn {
+            padding: 3px 8px;
+            border: 2px solid transparent;
+            background: transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 11px;
+            color: var(--dark-color);
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .lang-btn.active {
+            background: var(--report-blue);
+            color: white;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+            border-color: var(--secondary-color);
+        }
+        
+        /* RTL/LTR Support */
+        body.ltr {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        body.ltr .header-title,
+        body.ltr .summary-label,
+        body.ltr .summary-subtext,
+        body.ltr .chart-card-header h5,
+        body.ltr .report-tab,
+        body.ltr .table-custom th,
+        body.ltr .table-custom td,
+        body.ltr .stat-label,
+        body.ltr .modal-title,
+        body.ltr .sidebar-user div,
+        body.ltr .nav-link span,
+        body.ltr .sidebar-logo h3,
+        body.ltr .sidebar-logo small,
+        body.ltr .btn-custom {
+            text-align: left;
+            direction: ltr;
+        }
+        
+        body.ltr .sidebar-nav {
+            text-align: left;
+        }
+        
+        body.ltr .nav-link {
+            flex-direction: row;
+        }
+        
+        body.ltr .nav-link i {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+        
+        body.ltr #sidebar {
+            right: auto;
+            left: 0;
+            border-left: none;
+            border-right: 4px solid var(--secondary-color);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        body.ltr .main-content {
+            margin-right: 0;
+            margin-left: var(--sidebar-width);
+        }
+        
+        body.ltr .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        body.ltr .header-title i {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+        
+        body.ltr .language-switcher-header {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+        
+        body.ltr .text-end {
+            text-align: left !important;
+        }
+        
+        body.ltr .text-start {
+            text-align: right !important;
+        }
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ==================== SIDEBAR CORRECTIONS ==================== */
+        
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, #1a252f 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            max-height: 100vh;
+            padding: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1030;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--secondary-color);
+            right: 0;
+            top: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+        }
+        
+        #sidebar.hidden {
+            transform: translateX(var(--sidebar-width));
+        }
+        
+        body.ltr #sidebar.hidden {
+            transform: translateX(calc(-1 * var(--sidebar-width)));
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sidebar-logo i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-user {
+            padding: 1rem 1.5rem;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-user img {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+            text-align: right;
+            flex-grow: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        
+        body.ltr .sidebar-nav {
+            text-align: left;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 1rem 1.5rem;
+            margin: 0.2rem 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-5px);
+        }
+        
+        body.ltr .nav-link:hover {
+            transform: translateX(5px);
+        }
+        
+        .nav-link.active {
+            color: white;
+            background: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .nav-link i {
+            font-size: 1.2rem;
+            width: 24px;
+        }
+        
+        .main-content {
+            margin-right: var(--sidebar-width);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+        }
+        
+        .main-content.full-width {
+            margin-right: 0;
+        }
+        
+        /* ==================== LOGOUT CONTAINER - FIX CRITICAL ==================== */
+        
+        .logout-container {
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .header-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-title i {
+            color: var(--secondary-color);
+            margin-left: 10px;
+        }
+        
+        /* Summary Cards */
+        .summary-card {
+            border: none;
+            border-radius: 15px;
+            padding: 1.5rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            z-index: 1;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .summary-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            opacity: 0.9;
+        }
+        
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .summary-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-subtext {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Chart Cards */
+        .chart-card {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .chart-card-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-card-header h5 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .chart-card-header h5 i {
+            color: var(--secondary-color);
+            margin-left: 0.5rem;
+        }
+        
+        /* Report Tables */
+        .report-table-card {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .report-table-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        /* Table Styles */
+        .table-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .table-custom {
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table-custom thead {
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+            color: white;
+        }
+        
+        .table-custom th {
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            white-space: nowrap;
+        }
+        
+        .table-custom tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+            transform: scale(1.002);
+        }
+        
+        .table-custom td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        /* Tab Navigation */
+        .report-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        
+        .report-tab {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .report-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .report-tab.active {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* Quick Stats */
+        .quick-stats {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            border-right: 1px solid #eee;
+        }
+        
+        .stat-item:last-child {
+            border-right: none;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Badge Styles */
+        .badge-custom {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            color: white;
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: white;
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: white;
+        }
+        
+        .badge-primary {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+        }
+        
+        /* Button Styles */
+        .btn-custom {
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        /* Alert Styles */
+        .alert-custom {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+        
+        /* Responsive - Logique corrigée */
+        @media (max-width: 992px) {
+            #sidebar {
+                transform: translateX(var(--sidebar-width));
+            }
+            
+            #sidebar.hidden {
+                transform: translateX(0) !important;
+            }
+            
+            body.ltr #sidebar {
+                transform: translateX(calc(-1 * var(--sidebar-width)));
+            }
+            
+            body.ltr #sidebar.hidden {
+                transform: translateX(0) !important;
+            }
+            
+            .main-content {
+                margin-right: 0 !important;
+                margin-left: 0 !important;
+            }
+            
+            .report-tabs {
+                flex-direction: column;
+            }
+            
+            .language-switcher-header {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.4rem;
+            }
+            
+            .summary-number {
+                font-size: 2rem;
+            }
+            
+            .btn-custom {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .stat-item {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .stat-item:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="d-flex flex-column flex-nowrap">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-warehouse"></i>
+                <div>
+                    <h3 class="mb-0 fw-bold" data-i18n="system_name">نظام المخازن</h3>
+                    <small class="text-white-50" data-i18n="system_integration">الإدارة المتكاملة</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Info -->
+        <div class="sidebar-user d-flex align-items-center gap-3">
+            <img src="https://ui-avatars.com/api/?name=%D8%A3%D8%AD%D9%85%D8%AF+%D9%85%D8%AD%D9%85%D9%88%D8%AF&background=3498db&color=fff&size=50&rounded=true" 
+                 class="rounded-circle" alt="User">
+            <div>
+                <h6 class="mb-0 fw-bold">أحمد محمود</h6>
+                <small class="text-white-50" data-i18n="user_role">مدير النظام</small>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="sidebar-nav flex-grow-1">
+            <a href="dashboard.html" class="nav-link">
+                <i class="fas fa-chart-line"></i>
+                <span data-i18n="dashboard">لوحة التحكم</span>
+            </a>
+            <a href="inventory.html" class="nav-link">
+                <i class="fas fa-boxes"></i>
+                <span data-i18n="inventory_management">إدارة المخزون</span>
+            </a>
+            <a href="transactions.html" class="nav-link">
+                <i class="fas fa-exchange-alt"></i>
+                <span data-i18n="daily_operations">العمليات اليومية</span>
+            </a>
+            <a href="reports.html" class="nav-link active">
+                <i class="fas fa-chart-bar"></i>
+                <span data-i18n="reports_analysis">التقارير والتحليل</span>
+            </a>
+            <a href="warehouses.html" class="nav-link">
+                <i class="fas fa-warehouse"></i>
+                <span data-i18n="warehouse_management">إدارة المخازن</span>
+            </a>
+            <a href="users.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span data-i18n="users">المستخدمون</span>
+            </a>
+            <a href="settings.html" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span data-i18n="settings">الإعدادات</span>
+            </a>
+        </nav>
+        
+        <!-- Logout Button - CORRECTED -->
+        <div class="logout-container">
+            <a href="index.html" class="btn btn-danger w-100 py-2 fw-bold d-flex align-items-center justify-content-center gap-2">
+                <i class="fas fa-sign-out-alt"></i>
+                <span data-i18n="logout">تسجيل الخروج</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="main-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <button id="sidebarToggle" class="btn btn-outline-primary d-lg-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-chart-bar"></i>
+                    <span data-i18n="reports_title">التقارير والتحليلات</span>
+                </h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Language Switcher -->
+                <div class="language-switcher-header d-none d-lg-flex">
+                    <button class="lang-btn" data-lang="fr">FR</button>
+                    <button class="lang-btn active" data-lang="ar">AR</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="ru">RU</button>
+                </div>
+                
+                <!-- Date Filter -->
+                <div class="d-flex align-items-center gap-2">
+                    <select id="periodFilter" class="form-select form-select-sm w-auto">
+                        <option value="7" data-i18n="last_7_days">آخر 7 أيام</option>
+                        <option value="30" selected data-i18n="last_30_days">آخر 30 يوم</option>
+                        <option value="90" data-i18n="last_90_days">آخر 90 يوم</option>
+                        <option value="365" data-i18n="last_year">آخر سنة</option>
+                    </select>
+                    <select id="warehouseFilter" class="form-select form-select-sm w-auto">
+                        <option value="" data-i18n="all_warehouses">جميع المخازن</option>
+                        <option value="1" data-i18n="main_warehouse">المخزن الرئيسي</option>
+                        <option value="2" data-i18n="branch_1">مخزن الفرع الأول</option>
+                        <option value="3" data-i18n="branch_2">مخزن الفرع الثاني</option>
+                    </select>
+                </div>
+                
+                <!-- Export Buttons -->
+                <div class="btn-group">
+                    <button id="exportPDF" class="btn btn-danger btn-custom">
+                        <i class="fas fa-file-pdf"></i>
+                        <span data-i18n="export_pdf">PDF</span>
+                    </button>
+                    <button id="exportExcel" class="btn btn-success btn-custom">
+                        <i class="fas fa-file-excel"></i>
+                        <span data-i18n="export_excel">Excel</span>
+                    </button>
+                </div>
+                
+                <!-- Print Button -->
+                <button id="printReport" class="btn btn-primary btn-custom">
+                    <i class="fas fa-print"></i>
+                    <span data-i18n="print">طباعة</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Alert Container -->
+        <div id="alertContainer" class="container mt-3"></div>
+
+        <!-- Main Content -->
+        <main class="container-fluid py-4">
+            <!-- Summary Cards -->
+            <div class="row g-4 mb-4 fade-in">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="summary-card" style="background: var(--report-blue);">
+                        <div class="summary-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <h3 class="summary-label" data-i18n="total_products_label">إجمالي المنتجات</h3>
+                        <div class="summary-number" id="totalProducts">1,250</div>
+                        <div class="summary-subtext" data-i18n="products_in_stock">منتجات في المخزون</div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="summary-card" style="background: var(--report-green);">
+                        <div class="summary-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3 class="summary-label" data-i18n="total_transactions_label">إجمالي العمليات</h3>
+                        <div class="summary-number" id="totalTransactions">542</div>
+                        <div class="summary-subtext" data-i18n="incoming_outgoing">وارد وصادر</div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="summary-card" style="background: var(--report-orange);">
+                        <div class="summary-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3 class="summary-label" data-i18n="inventory_value_label">قيمة المخزون</h3>
+                        <div class="summary-number" id="totalValue">2.45M</div>
+                        <div class="summary-subtext" data-i18n="total_value">القيمة الإجمالية</div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="summary-card" style="background: var(--report-purple);">
+                        <div class="summary-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3 class="summary-label" data-i18n="low_stock_label">منخفض المخزون</h3>
+                        <div class="summary-number" id="lowStockCount">18</div>
+                        <div class="summary-subtext" data-i18n="needs_reorder">يحتاج إعادة طلب</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="row g-4 mb-4 fade-in">
+                <div class="col-12 col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header d-flex justify-content-between align-items-center">
+                            <h5>
+                                <i class="fas fa-chart-area text-primary"></i>
+                                <span data-i18n="stock_value_by_product">قيمة المخزون حسب المنتج</span>
+                            </h5>
+                            <button id="fullscreenStock" class="btn btn-link text-decoration-none p-0">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div style="height: 300px;">
+                            <canvas id="stockValueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header d-flex justify-content-between align-items-center">
+                            <h5>
+                                <i class="fas fa-chart-line text-success"></i>
+                                <span data-i18n="monthly_transactions">حركة العمليات الشهرية</span>
+                            </h5>
+                            <select id="chartTypeSelect" class="form-select form-select-sm w-auto">
+                                <option value="line" data-i18n="line_chart">خطي</option>
+                                <option value="bar" data-i18n="bar_chart">أعمدة</option>
+                            </select>
+                        </div>
+                        <div style="height: 300px;">
+                            <canvas id="monthlyTransChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="chart-card">
+                        <div class="chart-card-header d-flex justify-content-between align-items-center">
+                            <h5>
+                                <i class="fas fa-chart-pie text-warning"></i>
+                                <span data-i18n="transaction_type_distribution">توزيع أنواع العمليات</span>
+                            </h5>
+                            <button id="showTransDetails" class="btn btn-link text-decoration-none p-0">
+                                <i class="fas fa-list me-1"></i>
+                                <span data-i18n="view_details">عرض التفاصيل</span>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div style="height: 350px;">
+                                    <canvas id="transTypeChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div id="transTypeLegend" class="w-100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Tabs -->
+            <div class="row mb-4 fade-in">
+                <div class="col-12">
+                    <div class="report-tabs" id="reportTabs">
+                        <button class="report-tab active" data-report="stock">
+                            <i class="fas fa-boxes"></i>
+                            <span data-i18n="inventory_report">تقرير المخزون</span>
+                        </button>
+                        <button class="report-tab" data-report="transactions">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span data-i18n="movement_report">تقرير الحركة</span>
+                        </button>
+                        <button class="report-tab" data-report="lowStock">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span data-i18n="low_stock_report">منخفض المخزون</span>
+                        </button>
+                        <button class="report-tab" data-report="expiring">
+                            <i class="fas fa-calendar-times"></i>
+                            <span data-i18n="expiring_report">قريب الصلاحية</span>
+                        </button>
+                        <button class="report-tab" data-report="topProducts">
+                            <i class="fas fa-star"></i>
+                            <span data-i18n="top_products">أفضل المنتجات</span>
+                        </button>
+                        <button class="report-tab" data-report="warehouse">
+                            <i class="fas fa-warehouse"></i>
+                            <span data-i18n="warehouse_report">تقرير المخازن</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Tables -->
+            <div class="row fade-in">
+                <div class="col-12">
+                    <div id="reportTables" class="report-table-card">
+                        <!-- Tables will be loaded here -->
+                        <div class="text-center py-5">
+                            <div class="loading-spinner mx-auto mb-3"></div>
+                            <p class="text-muted mb-0" data-i18n="loading_data">جاري تحميل البيانات...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mt-4 fade-in">
+                <div class="col-12">
+                    <div class="quick-stats">
+                        <h5 class="mb-4 fw-bold text-primary">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            <span data-i18n="quick_stats">إحصائيات سريعة</span>
+                        </h5>
+                        <div class="row">
+                            <div class="col-6 col-md-3 stat-item">
+                                <div class="stat-value text-blue-600" id="avgStockValue">1,950</div>
+                                <div class="stat-label" data-i18n="avg_product_value">متوسط قيمة المنتج</div>
+                            </div>
+                            <div class="col-6 col-md-3 stat-item">
+                                <div class="stat-value text-green-600" id="totalIn">1,250</div>
+                                <div class="stat-label" data-i18n="total_incoming">إجمالي الوارد</div>
+                            </div>
+                            <div class="col-6 col-md-3 stat-item">
+                                <div class="stat-value text-red-600" id="totalOut">708</div>
+                                <div class="stat-label" data-i18n="total_outgoing">إجمالي الصادر</div>
+                            </div>
+                            <div class="col-6 col-md-3 stat-item">
+                                <div class="stat-value text-orange-600" id="avgTurnover">56%</div>
+                                <div class="stat-label" data-i18n="avg_inventory_turnover">متوسط دوران المخزون</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Fullscreen Modal -->
+    <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fullscreenModalTitle" data-i18n="chart_details">تفاصيل الرسم البياني</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="fullscreenChartContainer" style="height: 80vh;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // 🌍 LANGUAGE SWITCHER SYSTEM - CORRECTED
+        const languageSwitcher = {
+            currentLang: 'ar',
+            translations: {},
+            
+            // ✅ COMPLETE Russian translations added
+            builtInTranslations: {
+                'fr': {
+                    "reports_title": "Rapports et Analyse",
+                    "system_name": "Système d'Entrepôt",
+                    "system_integration": "Gestion Intégrée",
+                    "user_role": "Administrateur Système",
+                    "dashboard": "Tableau de Bord",
+                    "inventory_management": "Gestion des Stocks",
+                    "daily_operations": "Opérations Quotidiennes",
+                    "reports_analysis": "Rapports et Analyse",
+                    "warehouse_management": "Gestion des Entrepôts",
+                    "users": "Utilisateurs",
+                    "settings": "Paramètres",
+                    "logout": "Déconnexion",
+                    "total_products_label": "Total Produits",
+                    "products_in_stock": "produits en stock",
+                    "total_transactions_label": "Total Opérations",
+                    "incoming_outgoing": "entrées et sorties",
+                    "inventory_value_label": "Valeur du Stock",
+                    "total_value": "Valeur Totale",
+                    "low_stock_label": "Stock Bas",
+                    "needs_reorder": "Besoin de réapprovisionnement",
+                    "stock_value_by_product": "Valeur du Stock par Produit",
+                    "monthly_transactions": "Mouvements Mensuels",
+                    "transaction_type_distribution": "Distribution des Types d'Opérations",
+                    "view_details": "Voir Détails",
+                    "line_chart": "Linéaire",
+                    "bar_chart": "Barres",
+                    "inventory_report": "Rapport de Stock",
+                    "movement_report": "Rapport de Mouvement",
+                    "low_stock_report": "Stock Bas",
+                    "expiring_report": "Produits Expirant",
+                    "top_products": "Meilleurs Produits",
+                    "warehouse_report": "Rapport des Entrepôts",
+                    "loading_data": "Chargement des données...",
+                    "quick_stats": "Statistiques Rapides",
+                    "avg_product_value": "Valeur Moyenne Produit",
+                    "total_incoming": "Total Entrées",
+                    "total_outgoing": "Total Sorties",
+                    "avg_inventory_turnover": "Rotation Moyenne Stock",
+                    "chart_details": "Détails du Graphique",
+                    "export_pdf": "PDF",
+                    "export_excel": "Excel",
+                    "print": "Imprimer",
+                    "last_7_days": "7 derniers jours",
+                    "last_30_days": "30 derniers jours",
+                    "last_90_days": "90 derniers jours",
+                    "last_year": "Dernière année",
+                    "all_warehouses": "Tous les entrepôts",
+                    "main_warehouse": "Entrepôt Principal",
+                    "branch_1": "Succursale 1",
+                    "branch_2": "Succursale 2",
+                    "product": "Produit",
+                    "code": "Code",
+                    "category": "Catégorie",
+                    "quantity": "Quantité",
+                    "price": "Prix",
+                    "value": "Valeur",
+                    "status": "Statut",
+                    "date": "Date",
+                    "type": "Type",
+                    "warehouse": "Entrepôt",
+                    "user": "Utilisateur",
+                    "reference": "Référence",
+                    "actions": "Actions",
+                    "current_stock": "Stock Actuel",
+                    "reorder_level": "Niveau de Réapprovisionnement",
+                    "difference": "Différence",
+                    "last_update": "Dernière Mise à Jour",
+                    "action": "Action",
+                    "percentage": "Pourcentage",
+                    "rating": "Évaluation",
+                    "available_stock": "Stock Disponible",
+                    "total_units": "Unités Totales",
+                    "total_value_warehouse": "Valeur Totale",
+                    "good": "Bon",
+                    "low": "Bas",
+                    "critical": "Critique",
+                    "out_of_stock": "Rupture",
+                    "customer": "Client",
+                    "no_data": "Pas de données disponibles",
+                    "no_low_stock": "Aucun produit en stock bas",
+                    "low_stock_count": "Il y a",
+                    "products_need_reorder": "produits nécessitant un réapprovisionnement urgent",
+                    "product_ordered": "Produit commandé numéro",
+                    "redirecting_orders": "redirection vers la page des commandes",
+                    "order": "Commander",
+                    "no_expiring_products": "Aucun produit proche de l'expiration",
+                    "exporting": "Exportation",
+                    "export_success": "Export réussi",
+                    "filter_applied": "Filtre appliqué",
+                    "selected_warehouse": "Entrepôt sélectionné",
+                    "incoming_operations": "Opérations Entrantes",
+                    "outgoing_operations": "Opérations Sortantes",
+                    "total": "Total",
+                    "unit": "unité",
+                    "operation": "opération",
+                    "other": "Autre",
+                    "incoming": "Entrant",
+                    "outgoing": "Sortant",
+                    "transfer": "Transfert",
+                    "return": "Retour"
+                },
+                'en': {
+                    "reports_title": "Reports and Analysis",
+                    "system_name": "Warehouse System",
+                    "system_integration": "Integrated Management",
+                    "user_role": "System Administrator",
+                    "dashboard": "Dashboard",
+                    "inventory_management": "Inventory Management",
+                    "daily_operations": "Daily Operations",
+                    "reports_analysis": "Reports & Analysis",
+                    "warehouse_management": "Warehouse Management",
+                    "users": "Users",
+                    "settings": "Settings",
+                    "logout": "Logout",
+                    "total_products_label": "Total Products",
+                    "products_in_stock": "products in stock",
+                    "total_transactions_label": "Total Transactions",
+                    "incoming_outgoing": "incoming and outgoing",
+                    "inventory_value_label": "Inventory Value",
+                    "total_value": "Total Value",
+                    "low_stock_label": "Low Stock",
+                    "needs_reorder": "Needs reordering",
+                    "stock_value_by_product": "Stock Value by Product",
+                    "monthly_transactions": "Monthly Transactions",
+                    "transaction_type_distribution": "Transaction Type Distribution",
+                    "view_details": "View Details",
+                    "line_chart": "Line",
+                    "bar_chart": "Bar",
+                    "inventory_report": "Inventory Report",
+                    "movement_report": "Movement Report",
+                    "low_stock_report": "Low Stock Report",
+                    "expiring_report": "Expiring Products",
+                    "top_products": "Top Products",
+                    "warehouse_report": "Warehouse Report",
+                    "loading_data": "Loading data...",
+                    "quick_stats": "Quick Statistics",
+                    "avg_product_value": "Average Product Value",
+                    "total_incoming": "Total Incoming",
+                    "total_outgoing": "Total Outgoing",
+                    "avg_inventory_turnover": "Average Inventory Turnover",
+                    "chart_details": "Chart Details",
+                    "export_pdf": "PDF",
+                    "export_excel": "Excel",
+                    "print": "Print",
+                    "last_7_days": "Last 7 days",
+                    "last_30_days": "Last 30 days",
+                    "last_90_days": "Last 90 days",
+                    "last_year": "Last year",
+                    "all_warehouses": "All warehouses",
+                    "main_warehouse": "Main Warehouse",
+                    "branch_1": "Branch 1",
+                    "branch_2": "Branch 2",
+                    "product": "Product",
+                    "code": "Code",
+                    "category": "Category",
+                    "quantity": "Quantity",
+                    "price": "Price",
+                    "value": "Value",
+                    "status": "Status",
+                    "date": "Date",
+                    "type": "Type",
+                    "warehouse": "Warehouse",
+                    "user": "User",
+                    "reference": "Reference",
+                    "actions": "Actions",
+                    "current_stock": "Current Stock",
+                    "reorder_level": "Reorder Level",
+                    "difference": "Difference",
+                    "last_update": "Last Update",
+                    "action": "Action",
+                    "percentage": "Percentage",
+                    "rating": "Rating",
+                    "available_stock": "Available Stock",
+                    "total_units": "Total Units",
+                    "total_value_warehouse": "Total Value",
+                    "good": "Good",
+                    "low": "Low",
+                    "critical": "Critical",
+                    "out_of_stock": "Out of Stock",
+                    "customer": "Customer",
+                    "no_data": "No data available",
+                    "no_low_stock": "No low stock products",
+                    "low_stock_count": "There are",
+                    "products_need_reorder": "products needing urgent reorder",
+                    "product_ordered": "Product ordered number",
+                    "redirecting_orders": "redirecting to orders page",
+                    "order": "Order",
+                    "no_expiring_products": "No expiring products currently",
+                    "exporting": "Exporting",
+                    "export_success": "Export successful",
+                    "filter_applied": "Filter applied",
+                    "selected_warehouse": "Selected warehouse",
+                    "incoming_operations": "Incoming Operations",
+                    "outgoing_operations": "Outgoing Operations",
+                    "total": "Total",
+                    "unit": "unit",
+                    "operation": "operation",
+                    "other": "Other",
+                    "incoming": "Incoming",
+                    "outgoing": "Outgoing",
+                    "transfer": "Transfer",
+                    "return": "Return"
+                },
+                // ✅ COMPLETE RUSSIAN TRANSLATIONS ADDED
+                'ru': {
+                    "reports_title": "Отчеты и Анализ",
+                    "system_name": "Система Склада",
+                    "system_integration": "Интегрированное Управление",
+                    "user_role": "Администратор Системы",
+                    "dashboard": "Панель Управления",
+                    "inventory_management": "Управление Запасами",
+                    "daily_operations": "Ежедневные Операции",
+                    "reports_analysis": "Отчеты и Анализ",
+                    "warehouse_management": "Управление Складами",
+                    "users": "Пользователи",
+                    "settings": "Настройки",
+                    "logout": "Выйти",
+                    "total_products_label": "Всего Продуктов",
+                    "products_in_stock": "продуктов на складе",
+                    "total_transactions_label": "Всего Операций",
+                    "incoming_outgoing": "входящие и исходящие",
+                    "inventory_value_label": "Стоимость Запасов",
+                    "total_value": "Общая Стоимость",
+                    "low_stock_label": "Низкий Запас",
+                    "needs_reorder": "Требуется пополнение",
+                    "stock_value_by_product": "Стоимость Запасов по Продукту",
+                    "monthly_transactions": "Ежемесячные Операции",
+                    "transaction_type_distribution": "Распределение Типов Операций",
+                    "view_details": "Просмотреть Детали",
+                    "line_chart": "Линейный",
+                    "bar_chart": "Столбчатый",
+                    "inventory_report": "Отчет по Запасам",
+                    "movement_report": "Отчет по Движению",
+                    "low_stock_report": "Отчет по Низкому Запасу",
+                    "expiring_report": "Срок Годности",
+                    "top_products": "Лучшие Продукты",
+                    "warehouse_report": "Отчет по Складам",
+                    "loading_data": "Загрузка данных...",
+                    "quick_stats": "Быстрая Статистика",
+                    "avg_product_value": "Средняя Стоимость Продукта",
+                    "total_incoming": "Всего Входящих",
+                    "total_outgoing": "Всего Исходящих",
+                    "avg_inventory_turnover": "Средняя Оборачиваемость Запасов",
+                    "chart_details": "Детали Графика",
+                    "export_pdf": "PDF",
+                    "export_excel": "Excel",
+                    "print": "Печать",
+                    "last_7_days": "Последние 7 дней",
+                    "last_30_days": "Последние 30 дней",
+                    "last_90_days": "Последние 90 дней",
+                    "last_year": "Последний год",
+                    "all_warehouses": "Все склады",
+                    "main_warehouse": "Главный Склад",
+                    "branch_1": "Филиал 1",
+                    "branch_2": "Филиал 2",
+                    "product": "Продукт",
+                    "code": "Код",
+                    "category": "Категория",
+                    "quantity": "Количество",
+                    "price": "Цена",
+                    "value": "Стоимость",
+                    "status": "Статус",
+                    "date": "Дата",
+                    "type": "Тип",
+                    "warehouse": "Склад",
+                    "user": "Пользователь",
+                    "reference": "Ссылка",
+                    "actions": "Действия",
+                    "current_stock": "Текущий Запас",
+                    "reorder_level": "Уровень Заказа",
+                    "difference": "Разница",
+                    "last_update": "Последнее Обновление",
+                    "action": "Действие",
+                    "percentage": "Процент",
+                    "rating": "Оценка",
+                    "available_stock": "Доступный Запас",
+                    "total_units": "Всего Единиц",
+                    "total_value_warehouse": "Общая Стоимость",
+                    "good": "Хорошо",
+                    "low": "Низко",
+                    "critical": "Критично",
+                    "out_of_stock": "Нет в наличии",
+                    "customer": "Клиент",
+                    "no_data": "Нет данных",
+                    "no_low_stock": "Нет товаров с низким запасом",
+                    "low_stock_count": "Есть",
+                    "products_need_reorder": "товаров, требующих срочного пополнения",
+                    "product_ordered": "Заказан товар номер",
+                    "redirecting_orders": "перенаправление на страницу заказов",
+                    "order": "Заказ",
+                    "no_expiring_products": "Нет товаров с истекающим сроком годности",
+                    "exporting": "Экспорт",
+                    "export_success": "Экспорт успешен",
+                    "filter_applied": "Фильтр применен",
+                    "selected_warehouse": "Выбранный склад",
+                    "incoming_operations": "Входящие Операции",
+                    "outgoing_operations": "Исходящие Операции",
+                    "total": "Всего",
+                    "unit": "единица",
+                    "operation": "операция",
+                    "other": "Другое",
+                    "incoming": "Входящий",
+                    "outgoing": "Исходящий",
+                    "transfer": "Перевод",
+                    "return": "Возврат"
+                }
+            },
+            
+            // Initialize the language switcher
+            init: function() {
+                console.log('🌍 Initializing language switcher...');
+                this.loadSavedLanguage();
+                this.setupEventListeners();
+            },
+            
+            // Load saved language from localStorage or browser
+            loadSavedLanguage: function() {
+                const savedLang = localStorage.getItem('preferredLang');
+                const browserLang = navigator.language.split('-')[0];
+                const availableLangs = ['ar', 'fr', 'en', 'ru'];
+                
+                console.log(`📍 Saved lang: ${savedLang}, Browser lang: ${browserLang}`);
+                
+                let langToLoad = savedLang || browserLang || 'ar';
+                
+                // Validate language
+                if (!availableLangs.includes(langToLoad)) {
+                    console.warn(`❌ Language ${langToLoad} not available, defaulting to 'ar'`);
+                    langToLoad = 'ar';
+                }
+                
+                console.log(`✅ Loading language: ${langToLoad}`);
+                this.switchLanguage(langToLoad);
+            },
+            
+            // Switch to a specific language
+            switchLanguage: async function(langCode) {
+                if (this.currentLang === langCode) {
+                    console.log(`⚠️ Already on language: ${langCode}`);
+                    return;
+                }
+                
+                console.log(`🔄 Switching to language: ${langCode}`);
+                
+                try {
+                    // Use built-in translations
+                    if (this.builtInTranslations[langCode]) {
+                        this.translations[langCode] = this.builtInTranslations[langCode];
+                        console.log(`✅ Loaded translations for: ${langCode}`);
+                    } else {
+                        console.warn(`❌ No translations for ${langCode}, using Arabic fallback`);
+                        langCode = 'ar';
+                        this.translations[langCode] = this.builtInTranslations['ar'];
+                    }
+                    
+                    // Update current language
+                    this.currentLang = langCode;
+                    
+                    // Save preference
+                    localStorage.setItem('preferredLang', langCode);
+                    
+                    // Apply translations
+                    this.applyTranslations(this.translations[langCode]);
+                    
+                    // Update UI direction and language
+                    this.updatePageDirection(langCode);
+                    
+                    // Update active button
+                    this.updateActiveButton(langCode);
+                    
+                    // Update page title
+                    if (this.translations[langCode].reports_title) {
+                        document.title = this.translations[langCode].reports_title;
+                    }
+                    
+                    // Refresh charts
+                    this.refreshCharts();
+                    
+                    // Show notification
+                    const langName = this.languages[langCode]?.name || langCode;
+                    WMS.showAlert(`✅ Language changed to: ${langName}`, 'success');
+                    
+                    console.log(`✅ Language switch completed: ${langCode}`);
+                    
+                } catch (error) {
+                    console.error('❌ Failed to switch language:', error);
+                    WMS.showAlert('❌ Error changing language', 'danger');
+                }
+            },
+            
+            // Apply translations to all elements
+            applyTranslations: function(translationData) {
+                console.log('📝 Applying translations...');
+                let count = 0;
+                
+                // Translate text elements
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    if (translationData[key]) {
+                        element.textContent = translationData[key];
+                        count++;
+                    } else {
+                        console.warn(`⚠️ Missing translation key: ${key}`);
+                    }
+                });
+                
+                // Translate placeholders
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                    const key = element.getAttribute('data-i18n-placeholder');
+                    if (translationData[key]) {
+                        element.placeholder = translationData[key];
+                    }
+                });
+                
+                console.log(`📝 Applied ${count} translations`);
+            },
+            
+            // Update page direction (RTL/LTR)
+            updatePageDirection: function(langCode) {
+                const html = document.documentElement;
+                const body = document.body;
+                
+                console.log(`🔄 Updating page direction for: ${langCode}`);
+                
+                // Remove existing direction classes
+                body.classList.remove('ltr');
+                
+                // Apply LTR for non-Arabic languages (including Russian)
+                if (langCode !== 'ar') {
+                    html.dir = 'ltr';
+                    html.lang = langCode;
+                    body.classList.add('ltr');
+                    console.log(`✅ Applied LTR direction for: ${langCode}`);
+                } else {
+                    html.dir = 'rtl';
+                    html.lang = 'ar';
+                    console.log(`✅ Applied RTL direction for Arabic`);
+                }
+                
+                // Force reflow to ensure styles are applied correctly
+                document.body.offsetHeight;
+            },
+            
+            // Update active language button
+            updateActiveButton: function(langCode) {
+                document.querySelectorAll('.lang-btn').forEach(button => {
+                    button.classList.remove('active');
+                    if (button.getAttribute('data-lang') === langCode) {
+                        button.classList.add('active');
+                    }
+                });
+            },
+            
+            // Setup event listeners for language buttons
+            setupEventListeners: function() {
+                document.querySelectorAll('.lang-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const lang = e.target.getAttribute('data-lang');
+                        console.log(`🖱️ Language button clicked: ${lang}`);
+                        if (lang) {
+                            this.switchLanguage(lang);
+                        }
+                    });
+                });
+            },
+            
+            // Refresh charts with new language
+            refreshCharts: function() {
+                if (typeof updateChartTranslations === 'function') {
+                    updateChartTranslations(this.currentLang);
+                }
+                if (typeof updateTransactionLegend === 'function') {
+                    updateTransactionLegend();
+                }
+            },
+            
+            // Available languages metadata
+            languages: {
+                'ar': { name: 'العربية', native: 'العربية' },
+                'fr': { name: 'Français', native: 'Français' },
+                'en': { name: 'English', native: 'English' },
+                'ru': { name: 'Русский', native: 'Русский' }
+            }
+        };
+
+        // 📊 CHART AND WMS SYSTEMS
+        const WMS = {
+            toggleSidebar: function() {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.querySelector('.main-content');
+                if (sidebar) sidebar.classList.toggle('hidden');
+                if (mainContent) mainContent.classList.toggle('full-width');
+            },
+            
+            showAlert: function(message, type = 'info', duration = 5000) {
+                const alertContainer = document.getElementById('alertContainer');
+                if (!alertContainer) return;
+                
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-custom fade-in`;
+                alert.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'} me-2"></i>
+                        <div class="flex-grow-1">${message}</div>
+                        <button class="btn btn-link text-${type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'warning' ? 'warning' : 'info'} p-0" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                alertContainer.appendChild(alert);
+                
+                if (duration > 0) {
+                    setTimeout(() => {
+                        if (alert.parentElement) {
+                            alert.remove();
+                        }
+                    }, duration);
+                }
+            },
+            
+            formatNumber: function(num) {
+                try {
+                    return new Intl.NumberFormat('ar-EG').format(num);
+                } catch (e) {
+                    return num.toString();
+                }
+            },
+            
+            formatCurrency: function(num) {
+                try {
+                    if (num >= 1000000) {
+                        return (num / 1000000).toFixed(2) + ' مليون';
+                    } else if (num >= 1000) {
+                        return (num / 1000).toFixed(1) + ' ألف';
+                    }
+                    return new Intl.NumberFormat('ar-EG', {
+                        style: 'currency',
+                        currency: 'EGP'
+                    }).format(num);
+                } catch (e) {
+                    return num + ' ج.م';
+                }
+            }
+        };
+
+        // 📈 GLOBAL VARIABLES
+        let stockValueChart = null;
+        let monthlyTransChart = null;
+        let transTypeChart = null;
+        let currentReport = 'stock';
+
+        // 🚀 INITIALIZATION
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 PAGE INITIALIZATION STARTED');
+            
+            // Initialize language switcher
+            languageSwitcher.init();
+            
+            // Load reports data
+            loadReportsData();
+            
+            // Initialize charts
+            initializeCharts();
+            
+            // Show default report table
+            showReportTable('stock');
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Show welcome message
+            setTimeout(() => {
+                WMS.showAlert('✅ System ready! Click RU to test Russian', 'success');
+            }, 1000);
+            
+            console.log('✅ PAGE INITIALIZATION COMPLETED');
+        });
+
+        function setupEventListeners() {
+            // Sidebar toggle
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', WMS.toggleSidebar);
+            }
+            
+            // Period filter
+            const periodFilter = document.getElementById('periodFilter');
+            if (periodFilter) {
+                periodFilter.addEventListener('change', updateReports);
+            }
+            
+            // Warehouse filter
+            const warehouseFilter = document.getElementById('warehouseFilter');
+            if (warehouseFilter) {
+                warehouseFilter.addEventListener('change', updateReports);
+            }
+            
+            // Chart type change
+            const chartTypeSelect = document.getElementById('chartTypeSelect');
+            if (chartTypeSelect) {
+                chartTypeSelect.addEventListener('change', changeChartType);
+            }
+            
+            // Report tabs
+            const reportTabs = document.getElementById('reportTabs');
+            if (reportTabs) {
+                reportTabs.addEventListener('click', function(e) {
+                    const tab = e.target.closest('.report-tab');
+                    if (tab) {
+                        const reportType = tab.getAttribute('data-report');
+                        if (reportType) {
+                            showReportTable(reportType);
+                        }
+                    }
+                });
+            }
+            
+            // Fullscreen button
+            const fullscreenStock = document.getElementById('fullscreenStock');
+            if (fullscreenStock) {
+                fullscreenStock.addEventListener('click', () => toggleFullscreen('stockValueChart'));
+            }
+            
+            // Transaction details
+            const showTransDetails = document.getElementById('showTransDetails');
+            if (showTransDetails) {
+                showTransDetails.addEventListener('click', showTransactionDetails);
+            }
+        }
+
+        function loadReportsData() {
+            console.log('📊 Loading reports data...');
+            
+            try {
+                const mockData = {
+                    products: [
+                        { id: 1, name: 'كمبيوتر محمول', code: 'LPT001', category: 'إلكترونيات', current_stock: 50, price: 25000, unit: 'قطعة', reorder_level: 10, value: 1250000 },
+                        { id: 2, name: 'ماوس لاسلكي', code: 'MS001', category: 'إلكترونيات', current_stock: 200, price: 150, unit: 'قطعة', reorder_level: 50, value: 30000 },
+                        { id: 3, name: 'لوحة مفاتيح', code: 'KB001', category: 'إلكترونيات', current_stock: 150, price: 200, unit: 'قطعة', reorder_level: 30, value: 30000 },
+                        { id: 4, name: 'شاشة 24 بوصة', code: 'MN001', category: 'إلكترونيات', current_stock: 80, price: 4000, unit: 'قطعة', reorder_level: 20, value: 320000 },
+                        { id: 5, name: 'طابعة ليزر', code: 'PR001', category: 'أجهزة كمبيوتر', current_stock: 25, price: 5000, unit: 'قطعة', reorder_level: 5, value: 125000 },
+                        { id: 6, name: 'ورق A4', code: 'PP001', category: 'قرطاسية', current_stock: 500, price: 30, unit: 'رزمة', reorder_level: 100, value: 15000 },
+                        { id: 7, name: 'كرسي مكتب', code: 'CH001', category: 'أثاث مكتبي', current_stock: 40, price: 1500, unit: 'قطعة', reorder_level: 10, value: 60000 },
+                        { id: 8, name: 'مكتب خشبي', code: 'TB001', category: 'أثاث مكتبي', current_stock: 20, price: 2500, unit: 'قطعة', reorder_level: 5, value: 50000 },
+                        { id: 9, name: 'سماعات رأس', code: 'HP001', category: 'إلكترونيات', current_stock: 100, price: 300, unit: 'قطعة', reorder_level: 25, value: 30000 },
+                        { id: 10, name: 'فلاش USB 64GB', code: 'USB001', category: 'إلكترونيات', current_stock: 300, price: 120, unit: 'قطعة', reorder_level: 50, value: 36000 }
+                    ],
+                    transactions: [
+                        { id: 1, type: 'وارد', product_name: 'كمبيوتر محمول', quantity: 10, warehouse_name: 'المخزن الرئيسي', reference: 'INV-2023-001', date: '2023-10-15', user_name: 'أحمد محمود' },
+                        { id: 2, type: 'صادر', product_name: 'ماوس لاسلكي', quantity: 5, warehouse_name: 'المخزن الرئيسي', reference: 'SALE-2023-001', customer: 'شركة التقنية', date: '2023-10-15', user_name: 'أحمد محمود' },
+                        { id: 3, type: 'تحويل', product_name: 'لوحة مفاتيح', quantity: 20, from_warehouse_name: 'المخزن الرئيسي', to_warehouse_name: 'مخزن الفرع الأول', reference: 'TRF-2023-001', date: '2023-10-15', user_name: 'أحمد محمود' },
+                        { id: 4, type: 'إرجاع', product_name: 'شاشة 24 بوصة', quantity: 2, warehouse_name: 'المخزن الرئيسي', reference: 'RET-2023-001', customer: 'شركة النور', return_reason: 'تالف', date: '2023-10-15', user_name: 'أحمد محمود' },
+                        { id: 5, type: 'وارد', product_name: 'طابعة ليزر', quantity: 15, warehouse_name: 'مخزن الفرع الثاني', reference: 'INV-2023-002', date: '2023-10-14', user_name: 'محمد علي' },
+                        { id: 6, type: 'صادر', product_name: 'كمبيوتر محمول', quantity: 3, warehouse_name: 'المخزن الرئيسي', reference: 'SALE-2023-002', customer: 'مكتبة المعرفة', price: 25000, date: '2023-10-14', user_name: 'أحمد محمود' }
+                    ]
+                };
+                
+                updateSummaryCards({
+                    totalProducts: mockData.products.length,
+                    totalTransactions: mockData.transactions.length,
+                    totalValue: mockData.products.reduce((sum, p) => sum + (p.current_stock * p.price), 0),
+                    lowStockCount: mockData.products.filter(p => p.current_stock <= p.reorder_level).length,
+                    avgStockValue: 1950,
+                    totalIn: mockData.transactions.filter(t => t.type === 'وارد').reduce((sum, t) => sum + t.quantity, 0),
+                    totalOut: mockData.transactions.filter(t => t.type === 'صادر').reduce((sum, t) => sum + t.quantity, 0),
+                    avgTurnover: 56.6
+                });
+                
+                updateQuickStats();
+                
+                console.log('✅ Reports data loaded successfully');
+                
+            } catch (error) {
+                console.error('❌ Error loading reports data:', error);
+                WMS.showAlert('حدث خطأ في تحميل بيانات التقارير', 'danger');
+            }
+        }
+
+        function updateSummaryCards(data) {
+            const totalProducts = document.getElementById('totalProducts');
+            const totalTransactions = document.getElementById('totalTransactions');
+            const totalValue = document.getElementById('totalValue');
+            const lowStockCount = document.getElementById('lowStockCount');
+            
+            if (totalProducts) totalProducts.textContent = WMS.formatNumber(data.totalProducts);
+            if (totalTransactions) totalTransactions.textContent = WMS.formatNumber(data.totalTransactions);
+            if (totalValue) totalValue.textContent = WMS.formatCurrency(data.totalValue);
+            if (lowStockCount) lowStockCount.textContent = WMS.formatNumber(data.lowStockCount);
+        }
+
+        function initializeCharts() {
+            console.log('📊 Initializing charts...');
+            
+            // Stock Value Chart
+            const stockCtx = document.getElementById('stockValueChart');
+            if (stockCtx) {
+                const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+                
+                stockValueChart = new Chart(stockCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['كمبيوتر محمول', 'ماوس لاسلكي', 'لوحة مفاتيح', 'شاشة 24 بوصة', 'طابعة ليزر', 'ورق A4', 'كرسي مكتب', 'مكتب خشبي'].map(n => n.length > 15 ? n.substring(0, 15) + '...' : n),
+                        datasets: [{
+                            label: trans?.value || 'القيمة',
+                            data: [1250000, 30000, 30000, 320000, 125000, 15000, 60000, 50000],
+                            backgroundColor: '#3498db',
+                            borderColor: '#2980b9',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                rtl: languageSwitcher.currentLang === 'ar',
+                                labels: {
+                                    font: {
+                                        family: 'Cairo',
+                                        size: 12
+                                    },
+                                    color: '#374151'
+                                }
+                            },
+                            tooltip: {
+                                rtl: languageSwitcher.currentLang === 'ar',
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${languageSwitcher.builtInTranslations[languageSwitcher.currentLang]?.value || 'القيمة'}: ${WMS.formatCurrency(context.parsed.y)}`;
+                                    }
+                                },
+                                titleFont: {
+                                    family: 'Cairo'
+                                },
+                                bodyFont: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    font: {
+                                        family: 'Cairo'
+                                    },
+                                    callback: function(value) {
+                                        return WMS.formatCurrency(value);
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Cairo',
+                                        size: 11
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Monthly Transactions Chart
+            const monthlyCtx = document.getElementById('monthlyTransChart');
+            if (monthlyCtx) {
+                const days = [];
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    days.push(`${date.getDate()}/${date.getMonth() + 1}`);
+                }
+                
+                const inData = Array(30).fill(0).map(() => Math.floor(Math.random() * 30) + 5);
+                const outData = Array(30).fill(0).map(() => Math.floor(Math.random() * 20) + 3);
+                const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+                
+                monthlyTransChart = new Chart(monthlyCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: days,
+                        datasets: [
+                            {
+                                label: trans?.incoming || 'وارد',
+                                data: inData,
+                                borderColor: '#27ae60',
+                                backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: trans?.outgoing || 'صادر',
+                                data: outData,
+                                borderColor: '#e74c3c',
+                                backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                rtl: languageSwitcher.currentLang === 'ar',
+                                labels: {
+                                    font: {
+                                        family: 'Cairo',
+                                        size: 12
+                                    },
+                                    color: '#374151'
+                                }
+                            },
+                            tooltip: {
+                                rtl: languageSwitcher.currentLang === 'ar',
+                                titleFont: {
+                                    family: 'Cairo'
+                                },
+                                bodyFont: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    font: {
+                                        family: 'Cairo'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Cairo'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Transaction Type Chart
+            const typeCtx = document.getElementById('transTypeChart');
+            if (typeCtx) {
+                const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+                
+                transTypeChart = new Chart(typeCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: [
+                            trans?.incoming || 'وارد',
+                            trans?.outgoing || 'صادر',
+                            trans?.transfer || 'تحويل',
+                            trans?.return || 'إرجاع',
+                            trans?.other || 'أخرى'
+                        ],
+                        datasets: [{
+                            data: [35, 25, 20, 15, 5],
+                            backgroundColor: [
+                                '#27ae60',
+                                '#e74c3c',
+                                '#3498db',
+                                '#f39c12',
+                                '#9b59b6'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                rtl: languageSwitcher.currentLang === 'ar',
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${value} ${languageSwitcher.builtInTranslations[languageSwitcher.currentLang]?.operation || 'عملية'} (${percentage}%)`;
+                                    }
+                                },
+                                titleFont: {
+                                    family: 'Cairo'
+                                },
+                                bodyFont: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        },
+                        cutout: '60%'
+                    }
+                });
+                
+                updateTransactionLegend();
+            }
+            
+            console.log('✅ Charts initialized');
+        }
+
+        // 🔄 Chart translation update
+        function updateChartTranslations(lang) {
+            console.log(`🔄 Updating chart translations for: ${lang}`);
+            
+            if (stockValueChart) {
+                const trans = languageSwitcher.builtInTranslations[lang];
+                stockValueChart.data.datasets[0].label = trans?.value || 'القيمة';
+                stockValueChart.options.plugins.legend.rtl = lang === 'ar';
+                stockValueChart.options.plugins.tooltip.rtl = lang === 'ar';
+                stockValueChart.update();
+            }
+            
+            if (monthlyTransChart) {
+                const trans = languageSwitcher.builtInTranslations[lang];
+                monthlyTransChart.data.datasets[0].label = trans?.incoming || 'وارد';
+                monthlyTransChart.data.datasets[1].label = trans?.outgoing || 'صادر';
+                monthlyTransChart.options.plugins.legend.rtl = lang === 'ar';
+                monthlyTransChart.options.plugins.tooltip.rtl = lang === 'ar';
+                monthlyTransChart.update();
+            }
+            
+            if (transTypeChart) {
+                const trans = languageSwitcher.builtInTranslations[lang];
+                transTypeChart.data.labels = [
+                    trans?.incoming || 'وارد',
+                    trans?.outgoing || 'صادر',
+                    trans?.transfer || 'تحويل',
+                    trans?.return || 'إرجاع',
+                    trans?.other || 'أخرى'
+                ];
+                transTypeChart.options.plugins.tooltip.rtl = lang === 'ar';
+                transTypeChart.update();
+                updateTransactionLegend();
+            }
+        }
+
+        function updateTransactionLegend() {
+            const legendContainer = document.getElementById('transTypeLegend');
+            if (!legendContainer) return;
+            
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            const types = [
+                { name: trans?.incoming || 'وارد', color: '#27ae60', value: 35, count: 189 },
+                { name: trans?.outgoing || 'صادر', color: '#e74c3c', value: 25, count: 135 },
+                { name: trans?.transfer || 'تحويل', color: '#3498db', value: 20, count: 108 },
+                { name: trans?.return || 'إرجاع', color: '#f39c12', value: 15, count: 81 },
+                { name: trans?.other || 'أخرى', color: '#9b59b6', value: 5, count: 27 }
+            ];
+            
+            legendContainer.innerHTML = `
+                <div class="card border-0">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">${trans?.transaction_type_distribution || 'تفاصيل أنواع العمليات'}</h6>
+                        ${types.map(type => `
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle me-3" style="width: 20px; height: 20px; background-color: ${type.color};"></div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold">${type.name}</span>
+                                        <span>${type.value}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: ${type.value}%; background-color: ${type.color};"></div>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">${type.count} ${trans?.operation || 'عملية'}</small>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateQuickStats() {
+            const avgStockValue = document.getElementById('avgStockValue');
+            const totalIn = document.getElementById('totalIn');
+            const totalOut = document.getElementById('totalOut');
+            const avgTurnover = document.getElementById('avgTurnover');
+            
+            if (avgStockValue) avgStockValue.textContent = '1,950';
+            if (totalIn) totalIn.textContent = '1,250';
+            if (totalOut) totalOut.textContent = '708';
+            if (avgTurnover) avgTurnover.textContent = '56%';
+        }
+
+        function showReportTable(type) {
+            currentReport = type;
+            console.log(`📋 Showing report table: ${type}`);
+            
+            // Update active tab
+            document.querySelectorAll('.report-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-report') === type) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            const container = document.getElementById('reportTables');
+            if (!container) return;
+            
+            try {
+                let tableHTML = '';
+                
+                switch(type) {
+                    case 'stock':
+                        tableHTML = generateStockTable();
+                        break;
+                    case 'transactions':
+                        tableHTML = generateTransactionsTable();
+                        break;
+                    case 'lowStock':
+                        tableHTML = generateLowStockTable();
+                        break;
+                    case 'expiring':
+                        tableHTML = generateExpiringTable();
+                        break;
+                    case 'topProducts':
+                        tableHTML = generateTopProductsTable();
+                        break;
+                    case 'warehouse':
+                        tableHTML = generateWarehouseTable();
+                        break;
+                }
+                
+                container.innerHTML = tableHTML;
+                
+            } catch (error) {
+                console.error('❌ Error generating table:', error);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        حدث خطأ في تحميل البيانات
+                    </div>
+                `;
+            }
+        }
+
+        function generateStockTable() {
+            const products = [
+                { id: 1, name: 'كمبيوتر محمول', code: 'LPT001', category: 'إلكترونيات', current_stock: 50, price: 25000, unit: 'قطعة', reorder_level: 10 },
+                { id: 2, name: 'ماوس لاسلكي', code: 'MS001', category: 'إلكترونيات', current_stock: 200, price: 150, unit: 'قطعة', reorder_level: 50 }
+            ];
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            if (products.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">${trans?.no_data || 'لا توجد بيانات'}</p>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-boxes text-primary me-2"></i>
+                        ${trans?.inventory_report || 'تقرير المخزون الحالي'}
+                    </h5>
+                    <button onclick="exportTable('stock')" class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel me-1"></i> ${trans?.export_excel || 'تصدير Excel'}
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom">
+                            <thead>
+                                <tr>
+                                    <th width="50">#</th>
+                                    <th>${trans?.code || 'الرمز'}</th>
+                                    <th>${trans?.product || 'اسم المنتج'}</th>
+                                    <th>${trans?.category || 'الفئة'}</th>
+                                    <th>${trans?.quantity || 'الكمية'}</th>
+                                    <th>${trans?.price || 'السعر'}</th>
+                                    <th>${trans?.value || 'القيمة'}</th>
+                                    <th>${trans?.status || 'الحالة'}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${products.map((product, index) => {
+                                    const value = product.current_stock * product.price;
+                                    const isLow = product.current_stock <= product.reorder_level;
+                                    const isCritical = product.current_stock <= 5;
+                                    let status = trans?.good || 'جيد';
+                                    let statusClass = 'badge-success';
+                                    
+                                    if (product.current_stock === 0) {
+                                        status = trans?.out_of_stock || 'نفد';
+                                        statusClass = 'badge-danger';
+                                    } else if (isCritical) {
+                                        status = trans?.critical || 'حرج';
+                                        statusClass = 'badge-danger';
+                                    } else if (isLow) {
+                                        status = trans?.low || 'منخفض';
+                                        statusClass = 'badge-warning';
+                                    }
+                                    
+                                    return `
+                                        <tr>
+                                            <td>${index + 1}</td>
+                                            <td class="fw-bold">${product.code || 'N/A'}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-box text-primary me-2"></i>
+                                                    <span>${product.name || 'غير معروف'}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-light text-dark">${product.category || 'عام'}</span>
+                                            </td>
+                                            <td class="fw-bold">${WMS.formatNumber(product.current_stock)}</td>
+                                            <td>${WMS.formatCurrency(product.price)}</td>
+                                            <td class="fw-bold text-primary">${WMS.formatCurrency(value)}</td>
+                                            <td><span class="badge ${statusClass}">${status}</span></td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateTransactionsTable() {
+            const transactions = [
+                { id: 1, type: 'وارد', product_name: 'كمبيوتر محمول', quantity: 10, warehouse_name: 'المخزن الرئيسي', reference: 'INV-2023-001', date: '2023-10-15', user_name: 'أحمد محمود' },
+                { id: 2, type: 'صادر', product_name: 'ماوس لاسلكي', quantity: 5, warehouse_name: 'المخزن الرئيسي', reference: 'SALE-2023-001', customer: 'شركة التقنية', date: '2023-10-15', user_name: 'أحمد محمود' }
+            ];
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            if (transactions.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">${trans?.no_data || 'لا توجد بيانات'}</p>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-exchange-alt text-success me-2"></i>
+                        ${trans?.movement_report || 'تقرير الحركة'}
+                    </h5>
+                    <button onclick="exportTable('transactions')" class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel me-1"></i> ${trans?.export_excel || 'تصدير Excel'}
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom">
+                            <thead>
+                                <tr>
+                                    <th width="120">${trans?.date || 'التاريخ'}</th>
+                                    <th width="100">${trans?.type || 'النوع'}</th>
+                                    <th>${trans?.product || 'المنتج'}</th>
+                                    <th width="100">${trans?.quantity || 'الكمية'}</th>
+                                    <th width="150">${trans?.warehouse || 'المخزن'}</th>
+                                    <th width="150">${trans?.user || 'المستخدم'}</th>
+                                    <th width="120">${trans?.reference || 'المرجع'}</th>
+                                    <th width="120">${trans?.actions || 'الإجراءات'}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${transactions.map((transaction, index) => {
+                                    const badgeClass = {
+                                        'وارد': 'badge-success',
+                                        'صادر': 'badge-danger',
+                                        'تحويل': 'badge-primary',
+                                        'إرجاع': 'badge-warning'
+                                    }[transaction.type] || 'badge-info';
+                                    
+                                    const badgeIcon = {
+                                        'وارد': 'fa-arrow-down',
+                                        'صادر': 'fa-arrow-up',
+                                        'تحويل': 'fa-exchange-alt',
+                                        'إرجاع': 'fa-undo'
+                                    }[transaction.type] || 'fa-question';
+                                    
+                                    return `
+                                        <tr>
+                                            <td>${transaction.date || '-'}</td>
+                                            <td><span class="badge ${badgeClass} badge-custom"><i class="fas ${badgeIcon} me-1"></i>${transaction.type || '-'}</span></td>
+                                            <td>${transaction.product_name || '-'}</td>
+                                            <td class="fw-bold">${WMS.formatNumber(transaction.quantity || 0)}</td>
+                                            <td>${transaction.warehouse_name || '-'}</td>
+                                            <td>${transaction.user_name || '-'}</td>
+                                            <td class="font-monospace">${transaction.reference || '-'}</td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <button onclick="viewTransactionDetails('${transaction.id}')" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button onclick="deleteTransaction('${transaction.id}')" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateLowStockTable() {
+            const products = [
+                { id: 1, name: 'كمبيوتر محمول', current_stock: 8, reorder_level: 10, unit: 'قطعة' },
+                { id: 2, name: 'طابعة ليزر', current_stock: 3, reorder_level: 5, unit: 'قطعة' }
+            ];
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            const lowStockProducts = products.filter(p => p.current_stock <= p.reorder_level);
+            
+            if (lowStockProducts.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <p class="text-muted mb-0">${trans?.no_low_stock || 'لا توجد منتجات منخفضة المخزون'}</p>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        ${trans?.low_stock_report || 'تقرير المنتجات منخفضة المخزون'}
+                    </h5>
+                    <button onclick="exportTable('lowStock')" class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel me-1"></i> ${trans?.export_excel || 'تصدير Excel'}
+                    </button>
+                </div>
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    ${trans?.low_stock_count || 'يوجد'} ${lowStockProducts.length} ${trans?.products_need_reorder || 'منتج يحتاج إلى إعادة طلب فورية'}
+                </div>
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom">
+                            <thead>
+                                <tr>
+                                    <th width="50">#</th>
+                                    <th>${trans?.product || 'اسم المنتج'}</th>
+                                    <th>${trans?.current_stock || 'الكمية الحالية'}</th>
+                                    <th>${trans?.reorder_level || 'حد إعادة الطلب'}</th>
+                                    <th>${trans?.difference || 'الفرق'}</th>
+                                    <th>${trans?.action || 'الإجراء'}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${lowStockProducts.map((product, index) => {
+                                    const diff = product.reorder_level - product.current_stock;
+                                    
+                                    return `
+                                        <tr class="${product.current_stock === 0 ? 'table-danger' : 'table-warning'}">
+                                            <td>${index + 1}</td>
+                                            <td class="fw-bold">${product.name || 'غير معروف'}</td>
+                                            <td class="fw-bold text-warning">${WMS.formatNumber(product.current_stock)}</td>
+                                            <td>${WMS.formatNumber(product.reorder_level)}</td>
+                                            <td class="fw-bold text-danger">${WMS.formatNumber(diff)}</td>
+                                            <td>
+                                                <button onclick="orderProduct(${product.id})" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-shopping-cart me-1"></i> ${trans?.order || 'طلب'}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateExpiringTable() {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-calendar-times text-danger me-2"></i>
+                        ${trans?.expiring_report || 'تقرير المنتجات قريبة الصلاحية'}
+                    </h5>
+                    <button onclick="exportTable('expiring')" class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel me-1"></i> ${trans?.export_excel || 'تصدير Excel'}
+                    </button>
+                </div>
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                    <p class="text-muted mb-0">${trans?.no_expiring_products || 'لا توجد منتجات قريبة الصلاحية حالياً'}</p>
+                </div>
+            `;
+        }
+
+        function generateTopProductsTable() {
+            const products = [
+                { id: 1, name: 'كمبيوتر محمول', current_stock: 50, price: 25000 },
+                { id: 2, name: 'شاشة 24 بوصة', current_stock: 80, price: 4000 }
+            ];
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            const topProducts = products.sort((a, b) => (b.current_stock * b.price) - (a.current_stock * a.price)).slice(0, 10);
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        ${trans?.top_products || 'أفضل 10 منتجات حسب القيمة'}
+                    </h5>
+                    <button onclick="exportTable('topProducts')" class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel me-1"></i> ${trans?.export_excel || 'تصدير Excel'}
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom">
+                            <thead>
+                                <tr>
+                                    <th width="50">#</th>
+                                    <th>${trans?.product || 'المنتج'}</th>
+                                    <th>${trans?.quantity || 'الكمية'}</th>
+                                    <th>${trans?.price || 'السعر'}</th>
+                                    <th>${trans?.value || 'القيمة'}</th>
+                                    <th>${trans?.percentage || 'النسبة'}</th>
+                                    <th>${trans?.rating || 'التقييم'}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${topProducts.map((product, index) => {
+                                    const value = product.current_stock * product.price;
+                                    const totalValue = products.reduce((sum, p) => sum + (p.current_stock * p.price), 0);
+                                    const percentage = Math.round((value / totalValue) * 100);
+                                    
+                                    return `
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-primary rounded-circle">${index + 1}</span>
+                                            </td>
+                                            <td class="fw-bold">${product.name || 'غير معروف'}</td>
+                                            <td>${WMS.formatNumber(product.current_stock)}</td>
+                                            <td>${WMS.formatCurrency(product.price)}</td>
+                                            <td class="fw-bold text-primary">${WMS.formatCurrency(value)}</td>
+                                            <td>
+                                                <div class="progress" style="height: 10px;">
+                                                    <div class="progress-bar bg-success" style="width: ${percentage}%"></div>
+                                                </div>
+                                                <small class="text-muted">${percentage}%</small>
+                                            </td>
+                                            <td>
+                                                <div class="text-warning">
+                                                    ${'★'.repeat(Math.min(5, Math.ceil(percentage / 20)))}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateWarehouseTable() {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-warehouse text-info me-2"></i>
+                        ${trans?.warehouse_report || 'تقرير المخازن'}
+                    </h5>
+                    <button onclick="exportTable('warehouse')" class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel me-1"></i> ${trans?.export_excel || 'تصدير Excel'}
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">${trans?.main_warehouse || 'المخزن الرئيسي'}</h5>
+                                <div class="display-4 fw-bold text-primary mb-3">75%</div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-primary" style="width: 75%"></div>
+                                </div>
+                                <p class="text-muted mb-2">750 / 1000 ${trans?.total_units || 'وحدة'}</p>
+                                <small class="text-muted">${trans?.total_value_warehouse || 'إجمالي القيمة'}: 1,850,000 ج.م</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">${trans?.branch_1 || 'مخزن الفرع الأول'}</h5>
+                                <div class="display-4 fw-bold text-success mb-3">45%</div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-success" style="width: 45%"></div>
+                                </div>
+                                <p class="text-muted mb-2">225 / 500 ${trans?.total_units || 'وحدة'}</p>
+                                <small class="text-muted">${trans?.total_value_warehouse || 'إجمالي القيمة'}: 425,000 ج.م</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">${trans?.branch_2 || 'مخزن الفرع الثاني'}</h5>
+                                <div class="display-4 fw-bold text-warning mb-3">90%</div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-warning" style="width: 90%"></div>
+                                </div>
+                                <p class="text-muted mb-2">270 / 300 ${trans?.total_units || 'وحدة'}</p>
+                                <small class="text-muted">${trans?.total_value_warehouse || 'إجمالي القيمة'}: 175,000 ج.م</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 💾 EXPORT FUNCTIONS
+        function exportToPDF() {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            WMS.showAlert(trans?.exporting || 'جارٍ تحضير ملف PDF للتنزيل...', 'info');
+            setTimeout(() => {
+                WMS.showAlert(trans?.export_success || 'تم تصدير التقرير بنجاح', 'success');
+            }, 2000);
+        }
+
+        function exportToExcel() {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            WMS.showAlert(trans?.exporting || 'جارٍ تحضير ملف Excel للتنزيل...', 'info');
+            setTimeout(() => {
+                WMS.showAlert(trans?.export_success || 'تم تصدير التقرير بنجاح', 'success');
+            }, 2000);
+        }
+
+        function exportTable(type) {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            const reportNames = {
+                'stock': trans?.inventory_report || 'تقرير المخزون',
+                'transactions': trans?.movement_report || 'تقرير الحركة',
+                'lowStock': trans?.low_stock_report || 'تقرير منخفض المخزون',
+                'expiring': trans?.expiring_report || 'تقرير قريب الصلاحية',
+                'topProducts': trans?.top_products || 'تقرير أفضل المنتجات',
+                'warehouse': trans?.warehouse_report || 'تقرير المخازن'
+            };
+            
+            WMS.showAlert(`${trans?.exporting || 'جارٍ تصدير'} ${reportNames[type] || type}...`, 'info');
+            setTimeout(() => {
+                WMS.showAlert(trans?.export_success || 'تم تصدير الجدول بنجاح', 'success');
+            }, 1500);
+        }
+
+        function printReportFunc() {
+            window.print();
+        }
+
+        function updateReports() {
+            const period = document.getElementById('periodFilter')?.value || '30';
+            const warehouse = document.getElementById('warehouseFilter')?.value || '';
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            const periodText = {
+                '7': trans?.last_7_days || 'آخر 7 أيام',
+                '30': trans?.last_30_days || 'آخر 30 يوم',
+                '90': trans?.last_90_days || 'آخر 90 يوم',
+                '365': trans?.last_year || 'آخر سنة'
+            }[period] || period;
+            
+            const warehouseText = warehouse ? 
+                (trans?.selected_warehouse || 'مخزن محدد') : 
+                (trans?.all_warehouses || 'جميع المخازن');
+            
+            WMS.showAlert(`${trans?.filter_applied || 'تم تطبيق الفلترة'}: ${periodText}, ${warehouseText}`, 'info');
+            
+            showReportTable(currentReport);
+        }
+
+        function changeChartType() {
+            const type = document.getElementById('chartTypeSelect')?.value || 'line';
+            if (monthlyTransChart) {
+                monthlyTransChart.config.type = type;
+                monthlyTransChart.update();
+            }
+        }
+
+        function toggleFullscreen(chartId) {
+            const modalElement = document.getElementById('fullscreenModal');
+            if (!modalElement) return;
+            
+            const modal = new bootstrap.Modal(modalElement);
+            const title = document.getElementById('fullscreenModalTitle');
+            const container = document.getElementById('fullscreenChartContainer');
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            if (chartId === 'stockValueChart') {
+                if (title) title.textContent = trans?.stock_value_by_product || 'قيمة المخزون حسب المنتج';
+                if (container) {
+                    container.innerHTML = '<canvas id="fullscreenStockChart" style="width: 100%; height: 100%;"></canvas>';
+                    
+                    setTimeout(() => {
+                        const canvas = document.getElementById('fullscreenStockChart');
+                        if (canvas && stockValueChart) {
+                            new Chart(canvas.getContext('2d'), stockValueChart.config);
+                        }
+                    }, 100);
+                }
+            }
+            
+            modal.show();
+        }
+
+        function showTransactionDetails() {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            
+            const details = `
+                <h6 class="mb-3">${trans?.transaction_type_distribution || 'تفاصيل أنواع العمليات'}</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-success">${trans?.incoming_operations || 'العمليات الواردة'}</h5>
+                                <p class="card-text">
+                                    <i class="fas fa-arrow-down me-2"></i>
+                                    ${trans?.total || 'إجمالي'}: 189 ${trans?.operation || 'عملية'}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-box me-2"></i>
+                                    ${trans?.quantity || 'الكمية'}: 1,250 ${trans?.unit || 'وحدة'}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-money-bill me-2"></i>
+                                    ${trans?.value || 'القيمة'}: 850,000 ج.م
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-danger">${trans?.outgoing_operations || 'العمليات الصادرة'}</h5>
+                                <p class="card-text">
+                                    <i class="fas fa-arrow-up me-2"></i>
+                                    ${trans?.total || 'إجمالي'}: 135 ${trans?.operation || 'عملية'}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-box me-2"></i>
+                                    ${trans?.quantity || 'الكمية'}: 708 ${trans?.unit || 'وحدة'}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-money-bill me-2"></i>
+                                    ${trans?.value || 'القيمة'}: 650,000 ج.م
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            WMS.showAlert(details, 'info', 10000);
+        }
+
+        function orderProduct(productId) {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            WMS.showAlert(`${trans?.product_ordered || 'تم طلب المنتج رقم'} ${productId}, ${trans?.redirecting_orders || 'سيتم توجيهك إلى صفحة الطلبات'}`, 'success');
+        }
+
+        function viewTransactionDetails(transactionId) {
+            WMS.showAlert(`عرض تفاصيل العملية رقم: ${transactionId}`, 'info');
+        }
+
+        function deleteTransaction(transactionId) {
+            const trans = languageSwitcher.builtInTranslations[languageSwitcher.currentLang];
+            if (confirm(trans?.confirm_delete || 'هل أنت متأكد من حذف هذه العملية؟')) {
+                WMS.showAlert(trans?.operation_deleted || 'تم حذف العملية بنجاح', 'success');
+                setTimeout(() => {
+                    showReportTable(currentReport);
+                }, 500);
+            }
+        }
+        
+        // 🌐 GLOBAL EXPORT
+        window.toggleSidebar = WMS.toggleSidebar;
+        window.languageSwitcher = languageSwitcher;
+    </script>
+</body>
+</html>
